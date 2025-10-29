@@ -1,0 +1,291 @@
+// Authentication Controller
+const bcrypt = require('bcrypt');
+const { query } = require('../db/connection');
+const { generateToken } = require('../utils/jwt');
+
+const SALT_ROUNDS = 10;
+
+// User Registration
+async function register(req, res) {
+  try {
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      dateOfBirth,
+      addressLine1,
+      addressLine2,
+      city,
+      state,
+      zipCode,
+      country = 'US'
+    } = req.body;
+
+    // Validate required fields
+    if (!email || !password || !firstName || !lastName || !dateOfBirth || !state) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email format'
+      });
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'Password must be at least 8 characters'
+      });
+    }
+
+    // Validate age (must be 18+)
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (age < 18 || (age === 18 && monthDiff < 0)) {
+      return res.status(400).json({
+        success: false,
+        error: 'You must be at least 18 years old to register'
+      });
+    }
+
+    // Check for prohibited states
+    const prohibitedStates = ['WA', 'MT', 'LA', 'AZ', 'IA', 'NV'];
+    if (prohibitedStates.includes(state.toUpperCase())) {
+      return res.status(403).json({
+        success: false,
+        error: `Sorry, paid fantasy sports are not available in ${state}`
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await query(
+      'SELECT id FROM users WHERE email = $1',
+      [email.toLowerCase()]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        error: 'Email already registered'
+      });
+    }
+
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+    // Insert user
+    const result = await query(
+      `INSERT INTO users (
+        email, password_hash, first_name, last_name, date_of_birth,
+        address_line1, address_line2, city, state, zip_code, country
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id, email, first_name, last_name, created_at`,
+      [
+        email.toLowerCase(),
+        passwordHash,
+        firstName,
+        lastName,
+        dateOfBirth,
+        addressLine1,
+        addressLine2,
+        city,
+        state.toUpperCase(),
+        zipCode,
+        country.toUpperCase()
+      ]
+    );
+
+    const user = result.rows[0];
+
+    // Generate JWT token
+    const token = generateToken(user);
+
+    // Log registration in audit log
+    await query(
+      `INSERT INTO audit_log (user_id, event_type, event_data, ip_address)
+       VALUES ($1, $2, $3, $4)`,
+      [
+        user.id,
+        'user_registered',
+        JSON.stringify({ email: user.email }),
+        req.ip || req.connection.remoteAddress
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.first_name,
+          lastName: user.last_name
+        },
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Registration failed'
+    });
+  }
+}
+
+// User Login
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email and password are required'
+      });
+    }
+
+    // Get user from database
+    const result = await query(
+      `SELECT id, email, password_hash, first_name, last_name, account_status
+       FROM users WHERE email = $1`,
+      [email.toLowerCase()]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid email or password'
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Check account status
+    if (user.account_status !== 'active') {
+      return res.status(403).json({
+        success: false,
+        error: 'Account is suspended or banned'
+      });
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+
+    if (!isValidPassword) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid email or password'
+      });
+    }
+
+    // Update last login timestamp
+    await query(
+      'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [user.id]
+    );
+
+    // Generate JWT token
+    const token = generateToken(user);
+
+    // Log login in audit log
+    await query(
+      `INSERT INTO audit_log (user_id, event_type, event_data, ip_address)
+       VALUES ($1, $2, $3, $4)`,
+      [
+        user.id,
+        'user_login',
+        JSON.stringify({ email: user.email }),
+        req.ip || req.connection.remoteAddress
+      ]
+    );
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.first_name,
+          lastName: user.last_name
+        },
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Login failed'
+    });
+  }
+}
+
+// Get current user profile
+async function getProfile(req, res) {
+  try {
+    const result = await query(
+      `SELECT id, email, first_name, last_name, date_of_birth,
+              address_line1, address_line2, city, state, zip_code, country,
+              paypal_email, balance_cents, created_at
+       FROM users WHERE id = $1`,
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    const user = result.rows[0];
+
+    res.json({
+      success: true,
+      data: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        dateOfBirth: user.date_of_birth,
+        address: {
+          line1: user.address_line1,
+          line2: user.address_line2,
+          city: user.city,
+          state: user.state,
+          zipCode: user.zip_code,
+          country: user.country
+        },
+        paypalEmail: user.paypal_email,
+        balance: user.balance_cents / 100, // Convert cents to dollars
+        createdAt: user.created_at
+      }
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get profile'
+    });
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  getProfile
+};

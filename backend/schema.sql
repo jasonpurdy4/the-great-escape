@@ -125,7 +125,7 @@ CREATE TABLE entries (
 
   -- Financial
   entry_fee_cents INTEGER NOT NULL DEFAULT 1000, -- $10 = 1000 cents
-  transaction_id INTEGER REFERENCES transactions(id),
+  transaction_id INTEGER, -- Will add foreign key constraint later
 
   -- Teams used by this entry (for reuse prevention)
   teams_used INTEGER[] DEFAULT ARRAY[]::INTEGER[], -- Array of team IDs
