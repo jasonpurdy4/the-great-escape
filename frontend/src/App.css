@@ -2,6 +2,20 @@
   text-align: center;
 }
 
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf0 100%);
+}
+
+.loading-screen .loading {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
