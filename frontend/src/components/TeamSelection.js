@@ -30,8 +30,16 @@ function TeamSelection({ onNavigate }) {
 
   // Countdown timer effect
   useEffect(() => {
+    if (matches.length === 0) return;
+
+    const getDeadline = () => {
+      const firstMatch = matches.reduce((earliest, match) =>
+        new Date(match.utcDate) < new Date(earliest.utcDate) ? match : earliest
+      );
+      return new Date(new Date(firstMatch.utcDate) - 60 * 60 * 1000); // 1 hour before
+    };
+
     const deadline = getDeadline();
-    if (!deadline) return;
 
     const updateCountdown = () => {
       const now = new Date();
@@ -61,15 +69,6 @@ function TeamSelection({ onNavigate }) {
 
     return () => clearInterval(interval);
   }, [matches]);
-
-  const getDeadline = () => {
-    if (matches.length === 0) return null;
-    const firstMatch = matches.reduce((earliest, match) =>
-      new Date(match.utcDate) < new Date(earliest.utcDate) ? match : earliest
-    );
-    const deadline = new Date(new Date(firstMatch.utcDate) - 60 * 60 * 1000); // 1 hour before
-    return deadline;
-  };
 
   const isTeamUsed = (teamId) => {
     return usedTeams.includes(teamId);
@@ -121,8 +120,6 @@ function TeamSelection({ onNavigate }) {
       est: estTime
     };
   };
-
-  const deadline = getDeadline();
 
   if (loading) {
     return (
