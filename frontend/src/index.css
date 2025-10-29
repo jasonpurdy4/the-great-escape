@@ -94,16 +94,18 @@ p {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--navy) 0%, #0d1821 100%);
+  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%);
   color: var(--white);
-  box-shadow: 0 4px 16px rgba(26, 35, 50, 0.3);
+  box-shadow: 0 6px 20px rgba(200, 16, 46, 0.4);
   border: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #0d1821 0%, var(--navy) 100%);
-  box-shadow: 0 6px 20px rgba(26, 35, 50, 0.4);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #a00d25 0%, #C8102E 100%);
+  box-shadow: 0 8px 28px rgba(200, 16, 46, 0.5);
+  transform: translateY(-3px) scale(1.02);
 }
 
 .btn-secondary {
@@ -132,17 +134,20 @@ p {
 }
 
 .btn-huge {
-  padding: 24px 64px;
-  font-size: 22px;
-  font-weight: 700;
+  padding: 28px 72px;
+  font-size: 24px;
+  font-weight: 800;
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(26, 35, 50, 0.3);
+  box-shadow: 0 10px 30px rgba(200, 16, 46, 0.4);
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-huge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(26, 35, 50, 0.4);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 15px 40px rgba(200, 16, 46, 0.5);
 }
 
 /* Cards */

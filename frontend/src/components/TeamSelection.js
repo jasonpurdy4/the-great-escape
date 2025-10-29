@@ -3,7 +3,7 @@ import './TeamSelection.css';
 
 function TeamSelection({ onNavigate }) {
   const [matches, setMatches] = useState([]);
-  const [currentMatchday] = useState(9);
+  const [currentMatchday] = useState(10);
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [usedTeams, setUsedTeams] = useState([]);
