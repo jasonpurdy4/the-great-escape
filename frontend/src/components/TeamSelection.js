@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './TeamSelection.css';
 
 function TeamSelection() {
   const [matches, setMatches] = useState([]);
-  const [currentMatchday, setCurrentMatchday] = useState(9);
+  const [currentMatchday] = useState(9);
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [usedTeams, setUsedTeams] = useState([]);
 
-  useEffect(() => {
-    fetchMatchdayData();
-  }, [currentMatchday]);
-
-  const fetchMatchdayData = async () => {
+  const fetchMatchdayData = useCallback(async () => {
     try {
       setLoading(true);
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -24,7 +20,11 @@ function TeamSelection() {
       console.error('Error fetching matches:', error);
       setLoading(false);
     }
-  };
+  }, [currentMatchday]);
+
+  useEffect(() => {
+    fetchMatchdayData();
+  }, [fetchMatchdayData]);
 
   const getDeadline = () => {
     if (matches.length === 0) return null;
