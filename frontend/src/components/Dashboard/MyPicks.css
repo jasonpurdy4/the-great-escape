@@ -1,0 +1,250 @@
+/* MyPicks Styles */
+
+.my-picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Pick Card */
+.pick-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.pick-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Status-specific borders */
+.pick-card.status-active {
+  border-color: #2563eb;
+}
+
+.pick-card.status-survived {
+  border-color: #16a34a;
+}
+
+.pick-card.status-eliminated {
+  border-color: #dc2626;
+}
+
+.pick-card.status-pending {
+  border-color: #f59e0b;
+}
+
+/* Pick Header */
+.pick-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.pick-pool-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.matchday-badge {
+  display: inline-block;
+  background: var(--navy);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.status-active {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.status-survived {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-badge.status-eliminated {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.pick-entry-date {
+  font-size: 12px;
+  color: var(--medium-grey);
+  font-weight: 500;
+}
+
+/* Pick Content */
+.pick-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.pick-team-crest {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pick-details {
+  flex: 1;
+}
+
+.pick-team-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.pick-opponent {
+  font-size: 14px;
+  color: var(--medium-grey);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.pick-matchday {
+  font-size: 12px;
+  color: var(--medium-grey);
+  font-weight: 500;
+}
+
+/* Pick Result */
+.pick-result {
+  flex-shrink: 0;
+}
+
+.result-badge {
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.result-badge.win {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.result-badge.loss {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.result-badge.draw {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.result-badge.pending {
+  background: #e0e0e0;
+  color: var(--navy);
+}
+
+/* Pick Footer */
+.pick-footer {
+  padding-top: 16px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.teams-used {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.teams-used-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--medium-grey);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.teams-used-crests {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.used-team-crest {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.used-team-crest:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.more-teams {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--medium-grey);
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .my-picks {
+    grid-template-columns: 1fr;
+  }
+
+  .pick-card {
+    padding: 20px;
+  }
+
+  .pick-content {
+    gap: 12px;
+  }
+
+  .pick-team-crest {
+    width: 50px;
+    height: 50px;
+  }
+
+  .pick-team-name {
+    font-size: 16px;
+  }
+
+  .pick-opponent {
+    font-size: 13px;
+  }
+}

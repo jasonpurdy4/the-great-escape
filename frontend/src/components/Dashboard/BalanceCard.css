@@ -1,0 +1,196 @@
+/* BalanceCard Styles */
+
+.balance-card {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #f0f0f0;
+}
+
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.balance-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* Balance Grid */
+.balance-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.balance-item {
+  background: rgba(26, 35, 50, 0.03);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.balance-item:hover {
+  background: rgba(26, 35, 50, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Total Funds - Special styling */
+.balance-item.total-funds {
+  background: linear-gradient(135deg, #1a2332 0%, #2a3a52 100%);
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px;
+  grid-row: 1 / 3;
+}
+
+.balance-item.total-funds:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(26, 35, 50, 0.2);
+}
+
+.balance-item.total-funds .balance-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.balance-item.total-funds .balance-amount {
+  font-size: 48px;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.balance-item.total-funds .balance-note {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+/* Balance Icon */
+.balance-icon {
+  font-size: 32px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+/* Balance Info */
+.balance-info {
+  flex: 1;
+}
+
+.balance-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--medium-grey);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.balance-amount {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 2px;
+  line-height: 1;
+}
+
+.balance-note {
+  font-size: 12px;
+  color: var(--medium-grey);
+  font-weight: 500;
+}
+
+/* Explainer Section */
+.balance-explainer {
+  background: rgba(200, 16, 46, 0.05);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.explainer-item {
+  font-size: 13px;
+  color: var(--navy);
+  line-height: 1.5;
+}
+
+.explainer-item strong {
+  font-weight: 700;
+  color: #C8102E;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .balance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .balance-item.total-funds {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .balance-card {
+    padding: 24px;
+  }
+
+  .balance-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .balance-header h2 {
+    font-size: 20px;
+  }
+
+  .balance-item {
+    padding: 20px;
+  }
+
+  .balance-item.total-funds {
+    padding: 28px;
+  }
+
+  .balance-amount {
+    font-size: 24px;
+  }
+
+  .balance-item.total-funds .balance-amount {
+    font-size: 40px;
+  }
+
+  .balance-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .balance-explainer {
+    padding: 14px 16px;
+  }
+}

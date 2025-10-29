@@ -1,0 +1,477 @@
+/* Payment Component Styles */
+
+/* Overlay */
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal Base */
+.confirmation-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: var(--medium-grey);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--navy);
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 32px 32px 24px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 28px;
+  color: var(--navy);
+  text-align: center;
+}
+
+/* Modal Content */
+.modal-content {
+  padding: 32px;
+  text-align: center;
+}
+
+/* Large Crest Display */
+.modal-crest {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin: 0 auto 16px;
+  display: block;
+}
+
+.large-crest {
+  width: 120px;
+  height: 120px;
+}
+
+.team-pick-name {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.modal-opponent {
+  font-size: 18px;
+  color: var(--medium-grey);
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+
+/* Match Time Display */
+.modal-match-time {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(26, 35, 50, 0.05);
+  border-radius: 12px;
+}
+
+.modal-match-time div {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* Matchday Badge */
+.matchday-badge-large {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--navy) 0%, #2a3a52 100%);
+  color: white;
+  padding: 12px 32px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 16px;
+  margin: 8px 0 24px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(26, 35, 50, 0.3);
+}
+
+/* Info Boxes */
+.info-box {
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.modal-warning {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #856404;
+}
+
+.success-box {
+  background: #e7f5e9;
+  border: 2px solid #2d6a4f;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d6a4f;
+}
+
+/* Payment Options Preview */
+.payment-options-preview {
+  margin: 24px 0;
+}
+
+.funds-summary {
+  background: rgba(26, 35, 50, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.fund-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 16px;
+}
+
+.fund-item span {
+  color: var(--medium-grey);
+}
+
+.fund-item strong {
+  color: var(--navy);
+  font-size: 18px;
+}
+
+.fund-item.total {
+  border-top: 2px solid #e0e0e0;
+  padding-top: 16px;
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.fund-item.total span,
+.fund-item.total strong {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 24px 32px 32px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
+.lock-in-button {
+  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%);
+}
+
+/* Modal Footer Note */
+.modal-footer-note {
+  text-align: center;
+  padding: 0 32px 32px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--medium-grey);
+  font-style: italic;
+}
+
+/* ============================ */
+/* SignupPayment Modal Styles */
+/* ============================ */
+
+.signup-payment-modal {
+  max-width: 700px;
+}
+
+/* Pick Summary in Signup Modal */
+.pick-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 32px;
+  background: rgba(26, 35, 50, 0.05);
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.pick-summary .modal-crest {
+  width: 60px;
+  height: 60px;
+  margin: 0;
+}
+
+.pick-details {
+  flex: 1;
+  text-align: left;
+}
+
+.pick-details h3 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.pick-opponent {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--medium-grey);
+  font-weight: 600;
+}
+
+.pick-match-time {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.pick-match-time div {
+  font-size: 12px;
+  color: var(--medium-grey);
+  font-weight: 600;
+}
+
+.matchday-badge {
+  display: inline-block;
+  background: var(--navy);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Signup Form */
+.signup-form {
+  padding: 24px 32px 32px;
+}
+
+.signup-form .form-group {
+  margin-bottom: 16px;
+}
+
+.signup-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.signup-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 14px;
+}
+
+.signup-form input,
+.signup-form select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.signup-form input:focus,
+.signup-form select:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26, 35, 50, 0.1);
+}
+
+.signup-form input.error,
+.signup-form select.error {
+  border-color: #C8102E;
+}
+
+.signup-form .error-text {
+  display: block;
+  color: #C8102E;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Payment Step */
+.payment-step {
+  padding: 32px;
+}
+
+.payment-info {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.price-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(26, 35, 50, 0.05);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.price-label {
+  font-size: 18px;
+  color: var(--medium-grey);
+  font-weight: 600;
+}
+
+.price-amount {
+  font-size: 32px;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.payment-note {
+  font-size: 15px;
+  color: var(--medium-grey);
+  margin: 0;
+}
+
+/* PayPal Buttons Container */
+.paypal-buttons-container {
+  margin: 24px 0;
+  min-height: 60px;
+}
+
+.payment-footer-note {
+  text-align: center;
+  margin: 24px 0 0;
+  font-size: 13px;
+  color: var(--medium-grey);
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .confirmation-modal {
+    max-width: 95%;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 24px 20px 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 22px;
+  }
+
+  .modal-content {
+    padding: 24px 20px;
+  }
+
+  .team-pick-name {
+    font-size: 24px;
+  }
+
+  .modal-opponent {
+    font-size: 16px;
+  }
+
+  .modal-match-time {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .pick-summary {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+
+  .pick-details {
+    text-align: center;
+  }
+
+  .signup-form {
+    padding: 20px;
+  }
+
+  .signup-form .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-step {
+    padding: 20px;
+  }
+
+  .price-display {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

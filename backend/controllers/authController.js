@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const { query } = require('../db/connection');
 const { generateToken } = require('../utils/jwt');
+const { assignReferralCode, trackReferral } = require('./referralController');
 
 const SALT_ROUNDS = 10;
 
@@ -19,7 +20,8 @@ async function register(req, res) {
       city,
       state,
       zipCode,
-      country = 'US'
+      country = 'US',
+      referralCode
     } = req.body;
 
     // Validate required fields
@@ -108,6 +110,25 @@ async function register(req, res) {
     );
 
     const user = result.rows[0];
+
+    // Assign a referral code to the new user
+    try {
+      const newReferralCode = await assignReferralCode(user.id);
+      user.referral_code = newReferralCode;
+    } catch (error) {
+      console.error('Failed to assign referral code:', error);
+      // Don't fail registration if referral code assignment fails
+    }
+
+    // Track referral if a referral code was provided
+    if (referralCode) {
+      try {
+        await trackReferral(referralCode, user.id);
+      } catch (error) {
+        console.error('Failed to track referral:', error);
+        // Don't fail registration if referral tracking fails
+      }
+    }
 
     // Generate JWT token
     const token = generateToken(user);

@@ -1,0 +1,167 @@
+/* FutureMatchweeks Styles */
+
+.future-matchweeks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Matchweek Card */
+.matchweek-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.matchweek-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #C8102E 0%, var(--navy) 100%);
+}
+
+.matchweek-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  border-color: var(--navy);
+}
+
+/* Matchweek Header */
+.matchweek-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.matchweek-number {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.matchweek-deadline {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f59e0b;
+  background: #fef3c7;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* Matchweek Stats */
+.matchweek-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--medium-grey);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* Matchweek Actions */
+.matchweek-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.entry-fee {
+  font-size: 18px;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.matchweek-actions .btn {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.matchweek-actions .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Insufficient Funds Note */
+.insufficient-funds-note {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fee2e2;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #991b1b;
+  text-align: center;
+}
+
+/* Loading State */
+.future-matchweeks .loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  color: var(--medium-grey);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .future-matchweeks {
+    grid-template-columns: 1fr;
+  }
+
+  .matchweek-card {
+    padding: 20px;
+  }
+
+  .matchweek-number {
+    font-size: 20px;
+  }
+
+  .matchweek-stats {
+    gap: 12px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .matchweek-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .entry-fee {
+    text-align: center;
+  }
+}

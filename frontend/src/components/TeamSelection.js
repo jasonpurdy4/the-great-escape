@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
+import PickConfirmation from './Payment/PickConfirmation';
+import SignupPayment from './Payment/SignupPayment';
 import './TeamSelection.css';
 
 function TeamSelection({ onNavigate }) {
+  const { isAuthenticated } = useAuth();
   const [matches, setMatches] = useState([]);
   const [currentMatchday] = useState(10);
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const [usedTeams, setUsedTeams] = useState([]);
   const [hasConfirmedPick, setHasConfirmedPick] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState('');
+  const [showPickConfirmation, setShowPickConfirmation] = useState(false);
+  const [showSignupPayment, setShowSignupPayment] = useState(false);
 
   const fetchMatchdayData = useCallback(async () => {
     try {
@@ -83,14 +90,49 @@ function TeamSelection({ onNavigate }) {
       alert('You\'ve already used this team in a previous week!');
       return;
     }
-    setSelectedTeam({ ...team, match });
+    setSelectedTeam(team);
+    setSelectedMatch(match);
+    setShowPickConfirmation(true);
   };
 
-  const handleConfirmPick = () => {
-    if (!selectedTeam) return;
-    setUsedTeams([...usedTeams, selectedTeam.id]);
-    setHasConfirmedPick(true);
+  const handleClosePickConfirmation = () => {
+    setShowPickConfirmation(false);
     setSelectedTeam(null);
+    setSelectedMatch(null);
+  };
+
+  const handleConfirmPick = (team, match) => {
+    // If user is not authenticated, show signup/payment modal
+    if (!isAuthenticated) {
+      setShowPickConfirmation(false);
+      setShowSignupPayment(true);
+    } else {
+      // If authenticated, proceed with payment flow
+      // TODO: Show balance/payment selection modal (for later)
+      console.log('User is authenticated, proceed with payment');
+      // For now, just confirm the pick
+      setUsedTeams([...usedTeams, team.id]);
+      setHasConfirmedPick(true);
+      setShowPickConfirmation(false);
+      setSelectedTeam(null);
+      setSelectedMatch(null);
+    }
+  };
+
+  const handleCloseSignupPayment = () => {
+    setShowSignupPayment(false);
+    setSelectedTeam(null);
+    setSelectedMatch(null);
+  };
+
+  const handleSignupPaymentComplete = (data) => {
+    console.log('Payment complete!', data);
+    // Mark team as used and show success
+    setUsedTeams([...usedTeams, data.team.id]);
+    setHasConfirmedPick(true);
+    setShowSignupPayment(false);
+    setSelectedTeam(null);
+    setSelectedMatch(null);
   };
 
   const formatDate = (dateString) => {
@@ -217,40 +259,26 @@ function TeamSelection({ onNavigate }) {
           })}
         </div>
 
-        {/* Confirmation Overlay */}
-        {selectedTeam && !hasConfirmedPick && (
-          <div className="confirmation-overlay" onClick={() => setSelectedTeam(null)}>
-            <div className="confirmation-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>Confirm Your Pick</h3>
-                <button className="close-btn" onClick={() => setSelectedTeam(null)}>×</button>
-              </div>
-              <div className="modal-content">
-                <img
-                  src={selectedTeam.crest}
-                  alt={selectedTeam.name}
-                  className="modal-crest"
-                />
-                <h2>{selectedTeam.name}</h2>
-                <p className="modal-opponent">
-                  vs {selectedTeam.match.homeTeam.id === selectedTeam.id ? selectedTeam.match.awayTeam.name : selectedTeam.match.homeTeam.name}
-                </p>
-                <div className="modal-match-time">
-                  <div>🇬🇧 {formatDate(selectedTeam.match.utcDate).uk}</div>
-                  <div>🇺🇸 {formatDate(selectedTeam.match.utcDate).est} EST</div>
-                </div>
-                <p className="modal-warning">⚠️ You can't change this pick once confirmed!</p>
-              </div>
-              <div className="modal-actions">
-                <button onClick={() => setSelectedTeam(null)} className="btn btn-secondary btn-large">
-                  Cancel
-                </button>
-                <button onClick={handleConfirmPick} className="btn btn-primary btn-large">
-                  Confirm Pick
-                </button>
-              </div>
-            </div>
-          </div>
+        {/* Pick Confirmation Modal */}
+        {showPickConfirmation && selectedTeam && selectedMatch && (
+          <PickConfirmation
+            selectedTeam={selectedTeam}
+            match={selectedMatch}
+            matchday={currentMatchday}
+            onClose={handleClosePickConfirmation}
+            onConfirm={handleConfirmPick}
+          />
+        )}
+
+        {/* Signup + Payment Modal */}
+        {showSignupPayment && selectedTeam && selectedMatch && (
+          <SignupPayment
+            selectedTeam={selectedTeam}
+            match={selectedMatch}
+            matchday={currentMatchday}
+            onClose={handleCloseSignupPayment}
+            onComplete={handleSignupPaymentComplete}
+          />
         )}
 
         {/* Success Message */}

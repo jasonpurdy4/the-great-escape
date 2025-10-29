@@ -1,0 +1,133 @@
+/* Dashboard Styles */
+
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf0 100%);
+}
+
+/* Header */
+.dashboard-header {
+  background: white;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 24px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.welcome-text {
+  margin: 0;
+  font-size: 16px;
+  color: var(--medium-grey);
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  padding: 32px 0;
+}
+
+.dashboard-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 0 20px;
+}
+
+/* Special spacing for referral section */
+.referral-section {
+  margin: 60px 0;
+}
+
+/* Loading State */
+.dashboard .loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: var(--medium-grey);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 16px;
+  border: 2px dashed #e0e0e0;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 22px;
+  color: var(--navy);
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: var(--medium-grey);
+  margin: 0 0 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 16px 0;
+  }
+
+  .dashboard-header .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+
+  .welcome-text {
+    font-size: 14px;
+  }
+
+  .dashboard-content {
+    padding: 24px 0;
+  }
+
+  .dashboard-section {
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .referral-section {
+    margin: 40px 0;
+  }
+}

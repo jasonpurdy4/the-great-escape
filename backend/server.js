@@ -13,6 +13,7 @@ app.use(express.json());
 // Import routes
 const authRoutes = require('./routes/auth');
 const paymentRoutes = require('./routes/payments');
+const referralRoutes = require('./routes/referrals');
 
 // Football Data API configuration
 const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
@@ -21,6 +22,7 @@ const FOOTBALL_API_BASE = 'https://api.football-data.org/v4';
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/referrals', referralRoutes);
 
 // Test route
 app.get('/api/health', (req, res) => {

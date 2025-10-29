@@ -2,6 +2,7 @@
 const { client: paypalClient } = require('../config/paypal');
 const { OrdersController } = require('@paypal/paypal-server-sdk');
 const { query, transaction } = require('../db/connection');
+const { processReferral } = require('./referralController');
 
 const ordersController = new OrdersController(paypalClient);
 
@@ -263,6 +264,25 @@ async function captureOrder(req, res) {
         req.ip || req.connection.remoteAddress
       ]
     );
+
+    // Check if user was referred and award referral credits
+    try {
+      const referralCheckResult = await query(
+        'SELECT referred_by, referral_credited FROM users WHERE id = $1',
+        [userId]
+      );
+
+      const { referred_by, referral_credited } = referralCheckResult.rows[0];
+
+      // If user was referred and hasn't been credited yet, process the referral
+      if (referred_by && !referral_credited) {
+        await processReferral(referred_by, userId);
+        console.log(`✅ Referral credits awarded for user ${userId}`);
+      }
+    } catch (error) {
+      console.error('Referral credit error:', error);
+      // Don't fail the payment if referral credits fail
+    }
 
     res.json({
       success: true,
