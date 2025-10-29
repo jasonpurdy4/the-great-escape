@@ -7,6 +7,7 @@ function TeamSelection() {
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [usedTeams, setUsedTeams] = useState([]);
+  const [hasConfirmedPick, setHasConfirmedPick] = useState(false);
 
   const fetchMatchdayData = useCallback(async () => {
     try {
@@ -40,8 +41,12 @@ function TeamSelection() {
   };
 
   const handleSelectTeam = (team, match) => {
+    if (hasConfirmedPick) {
+      alert('You\'ve already made your pick for this matchday!');
+      return;
+    }
     if (isTeamUsed(team.id)) {
-      alert('You\'ve already used this team!');
+      alert('You\'ve already used this team in a previous week!');
       return;
     }
     setSelectedTeam({ ...team, match });
@@ -49,9 +54,8 @@ function TeamSelection() {
 
   const handleConfirmPick = () => {
     if (!selectedTeam) return;
-    // For MVP, just simulate confirmation
-    alert(`Pick confirmed: ${selectedTeam.name} vs ${selectedTeam.match.homeTeam.id === selectedTeam.id ? selectedTeam.match.awayTeam.name : selectedTeam.match.homeTeam.name}`);
     setUsedTeams([...usedTeams, selectedTeam.id]);
+    setHasConfirmedPick(true);
     setSelectedTeam(null);
   };
 
@@ -157,16 +161,47 @@ function TeamSelection() {
           ))}
         </div>
 
-        {/* Confirm Button */}
-        {selectedTeam && (
-          <div className="confirm-section">
-            <div className="confirm-box">
-              <p>
-                You're picking <strong>{selectedTeam.name}</strong> to win
-              </p>
-              <button onClick={handleConfirmPick} className="btn btn-primary btn-large">
-                Confirm Pick
-              </button>
+        {/* Confirmation Overlay */}
+        {selectedTeam && !hasConfirmedPick && (
+          <div className="confirmation-overlay" onClick={() => setSelectedTeam(null)}>
+            <div className="confirmation-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Confirm Your Pick</h3>
+                <button className="close-btn" onClick={() => setSelectedTeam(null)}>×</button>
+              </div>
+              <div className="modal-content">
+                <img
+                  src={selectedTeam.crest}
+                  alt={selectedTeam.name}
+                  className="modal-crest"
+                />
+                <h2>{selectedTeam.name}</h2>
+                <p className="modal-opponent">
+                  vs {selectedTeam.match.homeTeam.id === selectedTeam.id ? selectedTeam.match.awayTeam.name : selectedTeam.match.homeTeam.name}
+                </p>
+                <p className="modal-match-time">{formatDate(selectedTeam.match.utcDate)}</p>
+                <p className="modal-warning">⚠️ You can't change this pick once confirmed!</p>
+              </div>
+              <div className="modal-actions">
+                <button onClick={() => setSelectedTeam(null)} className="btn btn-secondary btn-large">
+                  Cancel
+                </button>
+                <button onClick={handleConfirmPick} className="btn btn-primary btn-large">
+                  Confirm Pick
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Success Message */}
+        {hasConfirmedPick && (
+          <div className="success-message">
+            <div className="success-content">
+              <div className="success-icon">✓</div>
+              <h3>Pick Confirmed!</h3>
+              <p>Your pick for Matchday {currentMatchday} has been locked in.</p>
+              <p className="success-note">Good luck! Check back after the matches to see if you survived.</p>
             </div>
           </div>
         )}

@@ -48,6 +48,28 @@
   margin: 0 auto;
 }
 
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.logo-icon {
+  font-size: 48px;
+  filter: drop-shadow(0 4px 12px rgba(200, 16, 46, 0.5));
+}
+
+.logo-text {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--white);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 .hero-title {
   font-size: 72px;
   font-weight: 800;

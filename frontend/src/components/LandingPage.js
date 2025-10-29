@@ -33,6 +33,10 @@ function LandingPage() {
         <div className="hero-background"></div>
         <div className="container">
           <div className="hero-content">
+            <div className="logo">
+              <div className="logo-icon">⛓️‍💥</div>
+              <div className="logo-text">THE GREAT ESCAPE</div>
+            </div>
             <h1 className="hero-title">
               Pick your team.<br />
               <span className="hero-title-accent">Survive</span> the season.
@@ -96,23 +100,18 @@ function LandingPage() {
           <div className="steps">
             <div className="step">
               <div className="step-number">1</div>
-              <h4>Enter a Pool</h4>
-              <p>$10 per entry. Multiple entries allowed. Each matchday starts a new pool.</p>
+              <h4>Pick a Team Each Week</h4>
+              <p>Choose one winning team per matchday. Can't reuse teams. Draw or loss = you're out.</p>
             </div>
             <div className="step">
               <div className="step-number">2</div>
-              <h4>Pick Winners</h4>
-              <p>Choose one winning team per matchday. Can't pick the same team twice.</p>
+              <h4>Survive or Die</h4>
+              <p>Win = Continue to next week. Draw or Loss = Eliminated. Simple as that.</p>
             </div>
             <div className="step">
               <div className="step-number">3</div>
-              <h4>Survive or Die</h4>
-              <p>Win = Continue. Draw or Loss = Eliminated. Simple as that.</p>
-            </div>
-            <div className="step">
-              <div className="step-number">4</div>
               <h4>Win the Pot</h4>
-              <p>Last survivor(s) split 90% of the pot. Platform takes 10%.</p>
+              <p>Last survivor(s) standing split the entire pot. Winner takes all.</p>
             </div>
           </div>
         </div>
@@ -134,10 +133,6 @@ function LandingPage() {
             <div className="feature-card card">
               <h4>💰 Weekly Pots</h4>
               <p>New pool starts every matchday. Multiple chances to win all season.</p>
-            </div>
-            <div className="feature-card card">
-              <h4>⚡ Live Updates</h4>
-              <p>Real-time match scores and elimination tracking during matches.</p>
             </div>
           </div>
         </div>
