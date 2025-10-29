@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Football Data API configuration
-const FOOTBALL_API_TOKEN = '5a09c0f3cece4cab8d1dda6c1b07582b';
+const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
 const FOOTBALL_API_BASE = 'https://api.football-data.org/v4';
 
 // Test route
