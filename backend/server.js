@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
+// Node 18+ has built-in fetch, no need for node-fetch
 
 const app = express();
 const PORT = process.env.PORT || 5000;
