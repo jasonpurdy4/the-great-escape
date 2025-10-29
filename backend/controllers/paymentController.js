@@ -121,9 +121,39 @@ async function captureOrder(req, res) {
       });
     }
 
+    // Extract PayPal payer ID
+    const paypalPayerId = capturedOrder.payer?.payer_id;
+
+    if (!paypalPayerId) {
+      return res.status(400).json({
+        success: false,
+        error: 'PayPal payer ID not found'
+      });
+    }
+
+    // Check if this PayPal account is already linked to another user
+    const existingUserResult = await query(
+      'SELECT id, email FROM users WHERE paypal_payer_id = $1 AND id != $2',
+      [paypalPayerId, userId]
+    );
+
+    if (existingUserResult.rows.length > 0) {
+      return res.status(403).json({
+        success: false,
+        error: 'This PayPal account is already linked to another user account. Each PayPal account can only be used once.',
+        code: 'PAYPAL_ACCOUNT_ALREADY_USED'
+      });
+    }
+
     // Use transaction to ensure atomicity
     const result = await transaction(async (client) => {
-      // 1. Add $10 to user balance
+      // 1. Store PayPal payer ID if not already set
+      await client.query(
+        'UPDATE users SET paypal_payer_id = $1 WHERE id = $2 AND paypal_payer_id IS NULL',
+        [paypalPayerId, userId]
+      );
+
+      // 2. Add $10 to user balance
       await client.query(
         'UPDATE users SET balance_cents = balance_cents + 1000 WHERE id = $1',
         [userId]
@@ -257,21 +287,30 @@ async function purchaseWithBalance(req, res) {
     const { poolId, teamId, teamName, matchId } = req.body;
     const userId = req.user.id;
 
-    // Get user balance
+    // Get user balance AND credits
     const userResult = await query(
-      'SELECT balance_cents FROM users WHERE id = $1',
+      'SELECT balance_cents, credit_cents FROM users WHERE id = $1',
       [userId]
     );
 
     const balance = userResult.rows[0].balance_cents;
+    const credits = userResult.rows[0].credit_cents;
+    const totalFunds = balance + credits;
 
-    if (balance < 1000) {
+    if (totalFunds < 1000) {
       return res.status(400).json({
         success: false,
-        error: 'Insufficient balance',
-        balance: balance / 100
+        error: 'Insufficient funds',
+        balance: balance / 100,
+        credits: credits / 100,
+        total: totalFunds / 100
       });
     }
+
+    // Calculate how much to deduct from credits vs balance
+    // Use credits first, then balance
+    const creditsToUse = Math.min(credits, 1000);
+    const balanceToUse = 1000 - creditsToUse;
 
     // Validate pool
     const poolResult = await query(
@@ -321,18 +360,32 @@ async function purchaseWithBalance(req, res) {
 
       const entryId = entryResult.rows[0].id;
 
-      // 3. Deduct from balance
-      await client.query(
-        'UPDATE users SET balance_cents = balance_cents - 1000 WHERE id = $1',
-        [userId]
-      );
+      // 3. Deduct from credits and/or balance
+      if (creditsToUse > 0) {
+        await client.query(
+          'UPDATE users SET credit_cents = credit_cents - $1 WHERE id = $2',
+          [creditsToUse, userId]
+        );
+      }
+      if (balanceToUse > 0) {
+        await client.query(
+          'UPDATE users SET balance_cents = balance_cents - $1 WHERE id = $2',
+          [balanceToUse, userId]
+        );
+      }
 
       // 4. Record transaction
+      const paymentSource = creditsToUse > 0 && balanceToUse > 0
+        ? `credits ($${(creditsToUse/100).toFixed(2)}) + balance ($${(balanceToUse/100).toFixed(2)})`
+        : creditsToUse > 0
+        ? 'credits'
+        : 'balance';
+
       await client.query(
         `INSERT INTO transactions (
           user_id, type, status, amount_cents, fee_cents, net_amount_cents,
-          payment_provider, pool_id, entry_id, description
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+          payment_provider, pool_id, entry_id, description, metadata
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
           userId,
           'entry_purchase',
@@ -343,7 +396,8 @@ async function purchaseWithBalance(req, res) {
           'balance',
           poolId,
           entryId,
-          `Entry purchase for Matchday ${pool.gameweek} using balance`
+          `Entry purchase for Matchday ${pool.gameweek} using ${paymentSource}`,
+          JSON.stringify({ creditsUsed: creditsToUse, balanceUsed: balanceToUse })
         ]
       );
 
