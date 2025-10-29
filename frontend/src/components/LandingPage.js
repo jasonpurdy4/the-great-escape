@@ -106,7 +106,7 @@ function LandingPage({ onNavigate }) {
       {/* Features Section */}
       <section className="features section">
         <div className="container">
-          <h2>Why Play?</h2>
+          <h2>Why You'll Love It</h2>
           <div className="feature-grid">
             <div className="feature-card card">
               <h4>🎯 Pure Skill</h4>
@@ -128,7 +128,7 @@ function LandingPage({ onNavigate }) {
       <section className="cta-section section">
         <div className="container">
           <div className="cta-box">
-            <h2>Ready to Escape?</h2>
+            <h2>Ready to Play?</h2>
             <p>Make your pick for Matchday 10 and join the survival pool.</p>
             <button
               onClick={() => onNavigate('team-selection')}

@@ -94,12 +94,16 @@ p {
 }
 
 .btn-primary {
-  background-color: var(--navy);
+  background: linear-gradient(135deg, var(--navy) 0%, #0d1821 100%);
   color: var(--white);
+  box-shadow: 0 4px 16px rgba(26, 35, 50, 0.3);
+  border: none;
 }
 
 .btn-primary:hover {
-  background-color: var(--dark-grey);
+  background: linear-gradient(135deg, #0d1821 0%, var(--navy) 100%);
+  box-shadow: 0 6px 20px rgba(26, 35, 50, 0.4);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {

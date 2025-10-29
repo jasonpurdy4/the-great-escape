@@ -8,6 +8,7 @@ function TeamSelection({ onNavigate }) {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [usedTeams, setUsedTeams] = useState([]);
   const [hasConfirmedPick, setHasConfirmedPick] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState('');
 
   const fetchMatchdayData = useCallback(async () => {
     try {
@@ -26,6 +27,40 @@ function TeamSelection({ onNavigate }) {
   useEffect(() => {
     fetchMatchdayData();
   }, [fetchMatchdayData]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    const deadline = getDeadline();
+    if (!deadline) return;
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const diff = deadline - now;
+
+      if (diff <= 0) {
+        setTimeRemaining('Deadline passed');
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (days > 0) {
+        setTimeRemaining(`${days}d ${hours}h ${minutes}m`);
+      } else if (hours > 0) {
+        setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+      } else {
+        setTimeRemaining(`${minutes}m ${seconds}s`);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [matches]);
 
   const getDeadline = () => {
     if (matches.length === 0) return null;
@@ -61,14 +96,30 @@ function TeamSelection({ onNavigate }) {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const options = {
+
+    // UK Time
+    const ukOptions = {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'Europe/London'
     };
-    return date.toLocaleDateString('en-GB', options);
+    const ukTime = date.toLocaleString('en-GB', ukOptions);
+
+    // EST Time
+    const estOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'America/New_York'
+    };
+    const estTime = date.toLocaleString('en-US', estOptions);
+
+    return {
+      uk: ukTime,
+      est: estTime
+    };
   };
 
   const deadline = getDeadline();
@@ -96,14 +147,9 @@ function TeamSelection({ onNavigate }) {
               <h1>Pick Your Team</h1>
               <div className="matchday-info">
                 <span className="matchday-badge">Matchday {currentMatchday}</span>
-                {deadline && (
+                {timeRemaining && (
                   <span className="deadline">
-                    Deadline: {deadline.toLocaleString('en-GB', {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
+                    Deadline: <span className="countdown">{timeRemaining}</span>
                   </span>
                 )}
               </div>
@@ -115,9 +161,14 @@ function TeamSelection({ onNavigate }) {
       {/* Match Grid */}
       <div className="container section">
         <div className="matches-grid">
-          {matches.map((match) => (
+          {matches.map((match) => {
+            const times = formatDate(match.utcDate);
+            return (
             <div key={match.id} className="match-card">
-              <div className="match-date">{formatDate(match.utcDate)}</div>
+              <div className="match-date">
+                <div className="time-uk">🇬🇧 {times.uk}</div>
+                <div className="time-est">🇺🇸 {times.est} EST</div>
+              </div>
 
               {/* Home Team */}
               <div
@@ -165,7 +216,8 @@ function TeamSelection({ onNavigate }) {
                 )}
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
 
         {/* Confirmation Overlay */}
@@ -186,7 +238,10 @@ function TeamSelection({ onNavigate }) {
                 <p className="modal-opponent">
                   vs {selectedTeam.match.homeTeam.id === selectedTeam.id ? selectedTeam.match.awayTeam.name : selectedTeam.match.homeTeam.name}
                 </p>
-                <p className="modal-match-time">{formatDate(selectedTeam.match.utcDate)}</p>
+                <div className="modal-match-time">
+                  <div>🇬🇧 {formatDate(selectedTeam.match.utcDate).uk}</div>
+                  <div>🇺🇸 {formatDate(selectedTeam.match.utcDate).est} EST</div>
+                </div>
                 <p className="modal-warning">⚠️ You can't change this pick once confirmed!</p>
               </div>
               <div className="modal-actions">

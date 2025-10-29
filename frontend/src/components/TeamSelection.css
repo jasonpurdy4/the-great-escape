@@ -70,6 +70,28 @@
   font-weight: 500;
 }
 
+.countdown {
+  background: linear-gradient(135deg, var(--union-jack-red) 0%, #a00d25 100%);
+  color: var(--white);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 18px;
+  display: inline-block;
+  margin-left: 8px;
+  box-shadow: 0 2px 8px rgba(200, 16, 46, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
 /* Matches Grid */
 .matches-grid {
   display: grid;
@@ -87,9 +109,19 @@
 
 .match-date {
   text-align: center;
-  font-size: 14px;
-  color: var(--medium-grey);
   margin-bottom: var(--space-md);
+}
+
+.time-uk {
+  font-size: 14px;
+  color: var(--navy);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.time-est {
+  font-size: 13px;
+  color: var(--medium-grey);
   font-weight: 500;
 }
 
@@ -326,9 +358,20 @@
 }
 
 .modal-match-time {
-  color: var(--dark-grey);
-  font-size: 16px;
   margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.modal-match-time div {
+  color: var(--dark-grey);
+  font-size: 15px;
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.modal-match-time div:first-child {
+  font-weight: 600;
+  color: var(--navy);
 }
 
 .modal-warning {
