@@ -1,8 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
 
 function LandingPage() {
   const [email, setEmail] = useState('');
+  const [teams, setTeams] = useState([]);
+
+  useEffect(() => {
+    fetchTeams();
+  }, []);
+
+  const fetchTeams = async () => {
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/api/teams`);
+      const data = await response.json();
+      setTeams(data.teams || []);
+    } catch (error) {
+      console.error('Error fetching teams:', error);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,16 +30,30 @@ function LandingPage() {
     <div className="landing-page">
       {/* Hero Section */}
       <section className="hero">
+        <div className="hero-background"></div>
         <div className="container">
           <div className="hero-content">
-            <h1>The Great Escape</h1>
+            <h1 className="hero-title">
+              Pick your team.<br />
+              <span className="hero-title-accent">Survive</span> the season.
+            </h1>
             <p className="hero-subtitle">
-              Premier League survival pool. Last one standing wins the pot.
+              Premier League survival pool where the last one standing wins the pot.
             </p>
-            <p className="hero-description">
-              Pick a winning team each matchday. Can't reuse teams. Draw or loss = eliminated.
-              Survive the season. Win big.
-            </p>
+            <div className="hero-stats">
+              <div className="stat">
+                <div className="stat-value">20</div>
+                <div className="stat-label">Teams</div>
+              </div>
+              <div className="stat">
+                <div className="stat-value">38</div>
+                <div className="stat-label">Matchdays</div>
+              </div>
+              <div className="stat">
+                <div className="stat-value">$10</div>
+                <div className="stat-label">Entry Fee</div>
+              </div>
+            </div>
             <div className="hero-cta">
               <form onSubmit={handleSubmit} className="email-signup">
                 <input
@@ -38,11 +68,26 @@ function LandingPage() {
                   Join Waiting List
                 </button>
               </form>
-              <p className="hero-note">Launching for the next Premier League season</p>
+              <p className="hero-note">Launching for the 2025/26 Premier League season 🏆</p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Team Crests Scrolling Section */}
+      {teams.length > 0 && (
+        <section className="teams-showcase">
+          <div className="teams-scroll">
+            <div className="teams-track">
+              {[...teams, ...teams].map((team, index) => (
+                <div key={`${team.id}-${index}`} className="team-badge">
+                  <img src={team.crest} alt={team.name} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* How It Works Section */}
       <section className="how-it-works section">
