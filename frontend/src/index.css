@@ -127,6 +127,20 @@ p {
   font-weight: 600;
 }
 
+.btn-huge {
+  padding: 24px 64px;
+  font-size: 22px;
+  font-weight: 700;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(26, 35, 50, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-huge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(26, 35, 50, 0.4);
+}
+
 /* Cards */
 .card {
   background: var(--white);

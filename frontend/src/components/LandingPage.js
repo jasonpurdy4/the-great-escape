@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
 
-function LandingPage() {
-  const [email, setEmail] = useState('');
+function LandingPage({ onNavigate }) {
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
@@ -18,12 +17,6 @@ function LandingPage() {
     } catch (error) {
       console.error('Error fetching teams:', error);
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Thanks! We'll notify you at ${email} when we launch!`);
-    setEmail('');
   };
 
   return (
@@ -59,20 +52,13 @@ function LandingPage() {
               </div>
             </div>
             <div className="hero-cta">
-              <form onSubmit={handleSubmit} className="email-signup">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="email-input"
-                />
-                <button type="submit" className="btn btn-primary btn-large">
-                  Join Waiting List
-                </button>
-              </form>
-              <p className="hero-note">Launching for the 2025/26 Premier League season 🏆</p>
+              <button
+                onClick={() => onNavigate('team-selection')}
+                className="btn btn-primary btn-huge"
+              >
+                Make Your Pick for Matchday 10
+              </button>
+              <p className="hero-note">Pick your team. Survive or die. Win the pot. 🏆</p>
             </div>
           </div>
         </div>
@@ -143,20 +129,13 @@ function LandingPage() {
         <div className="container">
           <div className="cta-box">
             <h2>Ready to Escape?</h2>
-            <p>Join the waiting list and be first to play when we launch.</p>
-            <form onSubmit={handleSubmit} className="email-signup">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="email-input"
-              />
-              <button type="submit" className="btn btn-primary btn-large">
-                Get Early Access
-              </button>
-            </form>
+            <p>Make your pick for Matchday 10 and join the survival pool.</p>
+            <button
+              onClick={() => onNavigate('team-selection')}
+              className="btn btn-primary btn-huge"
+            >
+              Make Your Pick Now
+            </button>
           </div>
         </div>
       </section>

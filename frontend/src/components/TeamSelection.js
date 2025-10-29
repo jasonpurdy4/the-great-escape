@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './TeamSelection.css';
 
-function TeamSelection() {
+function TeamSelection({ onNavigate }) {
   const [matches, setMatches] = useState([]);
   const [currentMatchday] = useState(9);
   const [loading, setLoading] = useState(true);
@@ -88,19 +88,26 @@ function TeamSelection() {
       {/* Header */}
       <div className="selection-header">
         <div className="container">
-          <h1>Pick Your Team</h1>
-          <div className="matchday-info">
-            <span className="matchday-badge">Matchday {currentMatchday}</span>
-            {deadline && (
-              <span className="deadline">
-                Deadline: {deadline.toLocaleString('en-GB', {
-                  month: 'short',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </span>
-            )}
+          <div className="header-content">
+            <button onClick={() => onNavigate('landing')} className="back-button">
+              ← Back
+            </button>
+            <div className="header-main">
+              <h1>Pick Your Team</h1>
+              <div className="matchday-info">
+                <span className="matchday-badge">Matchday {currentMatchday}</span>
+                {deadline && (
+                  <span className="deadline">
+                    Deadline: {deadline.toLocaleString('en-GB', {
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
