@@ -642,12 +642,37 @@ async function captureGuestOrder(req, res) {
       // User can update this later in their profile
       const placeholderDOB = '1990-01-01';
 
+      // Generate unique referral code (e.g., JASON123)
+      const generateReferralCode = () => {
+        const name = (firstName || 'USER').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 6);
+        const random = Math.floor(Math.random() * 999) + 1;
+        return `${name}${random}`;
+      };
+
+      let referralCode = generateReferralCode();
+      let isUnique = false;
+      let attempts = 0;
+
+      // Ensure referral code is unique (max 5 attempts)
+      while (!isUnique && attempts < 5) {
+        const existingCode = await query(
+          'SELECT id FROM users WHERE referral_code = $1',
+          [referralCode]
+        );
+        if (existingCode.rows.length === 0) {
+          isUnique = true;
+        } else {
+          referralCode = generateReferralCode();
+          attempts++;
+        }
+      }
+
       const newUserResult = await query(
         `INSERT INTO users (
           email, password_hash, first_name, last_name, date_of_birth,
-          paypal_payer_id, paypal_email, account_status
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING id`,
+          paypal_payer_id, paypal_email, account_status, referral_code
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING id, referral_code`,
         [
           payerEmail,
           passwordHash,
@@ -656,7 +681,8 @@ async function captureGuestOrder(req, res) {
           placeholderDOB,
           paypalPayerId,
           payerEmail,
-          'active'
+          'active',
+          referralCode
         ]
       );
 
@@ -790,7 +816,7 @@ async function captureGuestOrder(req, res) {
 
     // Fetch user data for JWT
     const userResult = await query(
-      'SELECT id, email, first_name, last_name FROM users WHERE id = $1',
+      'SELECT id, email, first_name, last_name, referral_code FROM users WHERE id = $1',
       [userId]
     );
     const user = userResult.rows[0];
@@ -811,7 +837,8 @@ async function captureGuestOrder(req, res) {
           id: user.id,
           email: user.email,
           firstName: user.first_name,
-          lastName: user.last_name
+          lastName: user.last_name,
+          referralCode: user.referral_code
         },
         message: 'Entry purchased successfully! Account created.'
       }

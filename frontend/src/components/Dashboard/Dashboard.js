@@ -5,6 +5,7 @@ import BalanceCard from './BalanceCard';
 import MyPicks from './MyPicks';
 import FutureMatchweeks from './FutureMatchweeks';
 import Referral from './Referral';
+import ReferralModal from '../ReferralModal';
 import './Dashboard.css';
 
 function Dashboard({ onNavigate }) {
@@ -12,12 +13,19 @@ function Dashboard({ onNavigate }) {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState([]);
   const [stats, setStats] = useState(null);
+  const [showReferralModal, setShowReferralModal] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+
+    // Show referral modal for new users (first time on dashboard)
+    const hasSeenReferralModal = localStorage.getItem('hasSeenReferralModal');
+    if (!hasSeenReferralModal && user) {
+      setShowReferralModal(true);
+    }
+  }, [user]);
 
   const fetchUserData = async () => {
     if (!token) {
@@ -70,6 +78,11 @@ function Dashboard({ onNavigate }) {
       console.error('Error fetching user data:', error);
       setLoading(false);
     }
+  };
+
+  const handleCloseReferralModal = () => {
+    setShowReferralModal(false);
+    localStorage.setItem('hasSeenReferralModal', 'true');
   };
 
   if (loading) {
@@ -129,6 +142,14 @@ function Dashboard({ onNavigate }) {
           <FutureMatchweeks onJoin={fetchUserData} />
         </div>
       </div>
+
+      {/* Referral Modal - Shows for new users */}
+      {showReferralModal && user?.referralCode && (
+        <ReferralModal
+          onClose={handleCloseReferralModal}
+          referralCode={user.referralCode}
+        />
+      )}
     </div>
   );
 }
