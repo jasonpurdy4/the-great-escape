@@ -638,17 +638,22 @@ async function captureGuestOrder(req, res) {
       const bcrypt = require('bcrypt');
       const passwordHash = await bcrypt.hash(tempPassword, 10);
 
+      // Use a placeholder date_of_birth (guarantees 18+)
+      // User can update this later in their profile
+      const placeholderDOB = '1990-01-01';
+
       const newUserResult = await query(
         `INSERT INTO users (
-          email, password_hash, first_name, last_name,
+          email, password_hash, first_name, last_name, date_of_birth,
           paypal_payer_id, paypal_email, account_status
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id`,
         [
           payerEmail,
           passwordHash,
           firstName,
           lastName,
+          placeholderDOB,
           paypalPayerId,
           payerEmail,
           'active'
