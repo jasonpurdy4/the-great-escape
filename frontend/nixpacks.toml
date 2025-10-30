@@ -8,7 +8,7 @@ cmds = ["npm install --legacy-peer-deps"]
 cmds = ["CI=false GENERATE_SOURCEMAP=false npm run build"]
 
 [start]
-cmd = "npx serve -s build -l $PORT"
+cmd = "./node_modules/.bin/serve -s build -l $PORT"
 
 [variables]
 NODE_ENV = "production"
