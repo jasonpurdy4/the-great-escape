@@ -70,7 +70,7 @@ function Dashboard({ onNavigate }) {
         {/* My Active Picks */}
         <div className="dashboard-section">
           <h2 className="section-title">My Active Picks</h2>
-          <MyPicks entries={activeEntries} onRefresh={fetchUserData} />
+          <MyPicks entries={[]} onRefresh={fetchUserData} />
         </div>
 
         {/* Referral Section - MASSIVE */}
