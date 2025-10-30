@@ -188,7 +188,6 @@ function LandingPage({ onNavigate }) {
         <div className="container">
           <div className="hero-content">
             <div className="logo">
-              <div className="logo-icon">⛓️‍💥</div>
               <div className="logo-text">THE GREAT ESCAPE</div>
             </div>
             <h1 className="hero-title">

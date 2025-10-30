@@ -30,12 +30,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.05;
-  background:
-    linear-gradient(90deg, var(--union-jack-red) 2px, transparent 2px),
-    linear-gradient(0deg, var(--union-jack-red) 2px, transparent 2px);
-  background-size: 80px 80px;
   z-index: 0;
+  /* Clean white background - no pattern */
 }
 
 .hero-content {
@@ -56,15 +52,15 @@
 
 .logo-icon {
   font-size: 48px;
-  filter: drop-shadow(0 4px 12px rgba(200, 16, 46, 0.5));
+  /* Icon hidden - will be removed from JSX */
 }
 
 .logo-text {
   font-size: 28px;
   font-weight: 900;
   letter-spacing: 3px;
-  color: var(--white);
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  color: var(--navy);
+  text-transform: uppercase;
 }
 
 .hero-title {
