@@ -31,8 +31,8 @@ function LandingPage({ onNavigate }) {
               <div className="logo-text">THE GREAT ESCAPE</div>
             </div>
             <h1 className="hero-title">
-              Pick your team.<br />
-              <span className="hero-title-accent">Survive</span> the season.
+              Hello World<br />
+              <span className="hero-title-accent">Test</span> deployment works!
             </h1>
             <p className="hero-subtitle">
               Premier League survival pool where the last one standing wins the pot.
