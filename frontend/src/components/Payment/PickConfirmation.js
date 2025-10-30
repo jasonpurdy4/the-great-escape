@@ -130,7 +130,7 @@ function PickConfirmation({
           <h1 className="team-pick-name">{selectedTeam.name}</h1>
           <p className="modal-opponent">vs {opponent}</p>
 
-          <p className="modal-subtitle">$10 to lock in this pick</p>
+          <p className="modal-subtitle">$10 Entry</p>
 
           {error && (
             <div className="error-box">
