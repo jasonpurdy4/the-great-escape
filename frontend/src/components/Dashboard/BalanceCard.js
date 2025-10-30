@@ -1,17 +1,15 @@
 // BalanceCard - Shows user's balance, credits, and total funds
-import React, { useState } from 'react';
+import React from 'react';
 import './BalanceCard.css';
 
 function BalanceCard({ balance, credits, totalFunds }) {
-  const [showAddFunds, setShowAddFunds] = useState(false);
-
   const formatCurrency = (cents) => {
     return (cents / 100).toFixed(2);
   };
 
   const handleAddFunds = () => {
     // TODO: Show add funds modal
-    setShowAddFunds(true);
+    console.log('Add funds clicked - modal not implemented yet');
   };
 
   return (

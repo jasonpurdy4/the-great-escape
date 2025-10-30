@@ -148,6 +148,7 @@ function SignupPayment({
     } else if (step === 2 && window.paypal) {
       renderPayPalButtons();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
   const renderPayPalButtons = () => {

@@ -9,7 +9,6 @@ import './Dashboard.css';
 
 function Dashboard({ onNavigate }) {
   const { user, balance, credits, totalFunds, logout } = useAuth();
-  const [activeEntries, setActiveEntries] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +20,6 @@ function Dashboard({ onNavigate }) {
       setLoading(true);
       // TODO: Fetch user's active entries from API
       // const response = await getMyEntries();
-      // setActiveEntries(response.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user data:', error);
