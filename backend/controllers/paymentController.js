@@ -73,7 +73,7 @@ async function createOrder(req, res) {
       }
     };
 
-    const response = await ordersController.ordersCreate(request);
+    const response = await ordersController.createOrder(request);
     const order = response.result;
 
     res.json({
@@ -100,7 +100,7 @@ async function captureOrder(req, res) {
 
     // Capture the payment
     const request = { id: orderId };
-    const response = await ordersController.ordersCapture(request);
+    const response = await ordersController.captureOrder(request);
     const capturedOrder = response.result;
 
     if (capturedOrder.status !== 'COMPLETED') {
@@ -540,7 +540,7 @@ async function createGuestOrder(req, res) {
     };
 
     console.log('Creating PayPal order with request:', JSON.stringify(request, null, 2));
-    const response = await ordersController.ordersCreate(request);
+    const response = await ordersController.createOrder(request);
     const order = response.result;
     console.log('PayPal order created successfully:', order.id);
 
@@ -571,7 +571,7 @@ async function captureGuestOrder(req, res) {
 
     // Capture the payment
     const request = { id: orderId };
-    const response = await ordersController.ordersCapture(request);
+    const response = await ordersController.captureOrder(request);
     const capturedOrder = response.result;
 
     if (capturedOrder.status !== 'COMPLETED') {
