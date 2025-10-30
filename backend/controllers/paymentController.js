@@ -603,12 +603,15 @@ async function captureGuestOrder(req, res) {
     const customData = JSON.parse(customIdString);
     const { poolId, teamId, teamName, matchId } = customData;
 
-    // Extract PayPal payer data
-    const paypalPayerId = capturedOrder.payer?.payer_id;
-    const payerEmail = capturedOrder.payer?.email_address;
+    // Extract PayPal payer data - handle both naming conventions
+    const paypalPayerId = capturedOrder.payer?.payerId || capturedOrder.payer?.payer_id;
+    const payerEmail = capturedOrder.payer?.emailAddress || capturedOrder.payer?.email_address;
     const payerName = capturedOrder.payer?.name;
 
+    console.log('Payer data:', { paypalPayerId, payerEmail, payerName });
+
     if (!paypalPayerId || !payerEmail) {
+      console.error('Missing payer info - payerId:', paypalPayerId, 'email:', payerEmail);
       return res.status(400).json({
         success: false,
         error: 'PayPal payer information not found'
