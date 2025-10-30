@@ -9,11 +9,11 @@ function PickConfirmation({
   onClose,
   onSuccess
 }) {
-  if (!selectedTeam || !match) return null;
-
   const paypalRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  if (!selectedTeam || !match) return null;
 
   const opponent = match.homeTeam.id === selectedTeam.id
     ? match.awayTeam.name
