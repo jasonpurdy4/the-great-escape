@@ -31,24 +31,24 @@
   right: 0;
   bottom: 0;
   z-index: 0;
-  opacity: 0.03;
+  opacity: 0.08;
+  background-color: var(--premier-league-purple);
   background-image:
     /* White cross (vertical) */
-    linear-gradient(90deg, transparent 40%, var(--white) 40%, var(--white) 60%, transparent 60%),
+    linear-gradient(90deg, transparent 40%, white 40%, white 60%, transparent 60%),
     /* White cross (horizontal) */
-    linear-gradient(0deg, transparent 40%, var(--white) 40%, var(--white) 60%, transparent 60%),
+    linear-gradient(0deg, transparent 40%, white 40%, white 60%, transparent 60%),
     /* Red cross (vertical - thinner) */
-    linear-gradient(90deg, transparent 44%, var(--union-jack-red) 44%, var(--union-jack-red) 56%, transparent 56%),
+    linear-gradient(90deg, transparent 45%, var(--union-jack-red) 45%, var(--union-jack-red) 55%, transparent 55%),
     /* Red cross (horizontal - thinner) */
-    linear-gradient(0deg, transparent 44%, var(--union-jack-red) 44%, var(--union-jack-red) 56%, transparent 56%),
-    /* Diagonal red lines - top-left to bottom-right */
-    repeating-linear-gradient(45deg, transparent, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%, transparent 100%),
-    /* Diagonal red lines - top-right to bottom-left */
-    repeating-linear-gradient(-45deg, transparent, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%, transparent 100%),
-    /* Navy blue background */
-    var(--premier-league-purple);
+    linear-gradient(0deg, transparent 45%, var(--union-jack-red) 45%, var(--union-jack-red) 55%, transparent 55%),
+    /* Diagonal red stripe - upper left to lower right */
+    linear-gradient(45deg, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%),
+    /* Diagonal red stripe - upper right to lower left */
+    linear-gradient(-45deg, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%);
   background-size: 100% 100%;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hero-content {
@@ -112,9 +112,16 @@
 /* Stats Section */
 .hero-stats {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.stats-row {
+  display: flex;
   justify-content: center;
   gap: 60px;
-  margin-bottom: 48px;
   flex-wrap: wrap;
 }
 

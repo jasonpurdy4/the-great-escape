@@ -199,24 +199,28 @@ function LandingPage({ onNavigate }) {
             </p>
             {poolStats && currentMatchweek && (
               <div className="hero-stats">
-                <div className="stat">
-                  <div className="stat-value">Matchday {currentMatchweek.matchweek}</div>
-                  <div className="stat-label">Current Week</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-value">{poolStats.total_entries !== undefined && poolStats.total_entries !== null ? poolStats.total_entries : 'N/A'}</div>
-                  <div className="stat-label">Entries</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-value">{poolStats.prize_pool !== undefined && poolStats.prize_pool !== null ? `$${poolStats.prize_pool.toFixed(0)}` : 'N/A'}</div>
-                  <div className="stat-label">Prize Pool</div>
-                </div>
-                {timeRemaining && (
+                <div className="stats-row">
                   <div className="stat">
-                    <div className="stat-value countdown">{timeRemaining}</div>
-                    <div className="stat-label">Time Left</div>
+                    <div className="stat-value">Matchday {currentMatchweek.matchweek}</div>
+                    <div className="stat-label">Current Week</div>
                   </div>
-                )}
+                  {timeRemaining && (
+                    <div className="stat">
+                      <div className="stat-value countdown">{timeRemaining}</div>
+                      <div className="stat-label">Time Left</div>
+                    </div>
+                  )}
+                </div>
+                <div className="stats-row">
+                  <div className="stat">
+                    <div className="stat-value">{poolStats.total_entries !== undefined && poolStats.total_entries !== null ? poolStats.total_entries : 'N/A'}</div>
+                    <div className="stat-label">Entries</div>
+                  </div>
+                  <div className="stat">
+                    <div className="stat-value">{poolStats.prize_pool !== undefined && poolStats.prize_pool !== null ? `$${poolStats.prize_pool.toFixed(0)}` : 'N/A'}</div>
+                    <div className="stat-label">Prize Pool</div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
