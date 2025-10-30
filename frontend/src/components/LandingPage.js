@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
 import PickConfirmation from './Payment/PickConfirmation';
 import SignupPayment from './Payment/SignupPayment';
 import './LandingPage.css';
 import './TeamSelection.css'; // Import team selection styles for embedded fixtures
 
 function LandingPage({ onNavigate }) {
+  const { login } = useAuth();
   const [teams, setTeams] = useState([]);
   const [matches, setMatches] = useState([]);
   const [currentMatchweek, setCurrentMatchweek] = useState(null);
@@ -154,10 +156,15 @@ function LandingPage({ onNavigate }) {
     setSelectedTeam(null);
     setSelectedMatch(null);
 
-    // TODO: Show referral modal
-    alert(`Pick confirmed! Welcome to The Great Escape!\n\nEntry #${data.entryNumber} created.\n\nCheck your email for login details.`);
-
-    // TODO: Navigate to dashboard or show referral modal
+    // Log the user in with JWT from payment response
+    if (data.token && data.user) {
+      login(data.user, data.token);
+      // Navigate to dashboard (AuthContext will auto-redirect)
+      onNavigate('dashboard');
+    } else {
+      // Fallback if no token (shouldn't happen)
+      alert(`Pick confirmed! Welcome to The Great Escape!\n\nEntry #${data.entryNumber} created.\n\nCheck your email for login details.`);
+    }
   };
 
   const formatDate = (dateString) => {

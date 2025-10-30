@@ -788,6 +788,17 @@ async function captureGuestOrder(req, res) {
       ]
     );
 
+    // Fetch user data for JWT
+    const userResult = await query(
+      'SELECT id, email, first_name, last_name FROM users WHERE id = $1',
+      [userId]
+    );
+    const user = userResult.rows[0];
+
+    // Generate JWT token for automatic login
+    const { generateToken } = require('../utils/jwt');
+    const token = generateToken(user);
+
     res.json({
       success: true,
       data: {
@@ -795,6 +806,13 @@ async function captureGuestOrder(req, res) {
         entryNumber: result.entryNumber,
         userId: userId,
         email: payerEmail,
+        token: token, // JWT for automatic login
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.first_name,
+          lastName: user.last_name
+        },
         message: 'Entry purchased successfully! Account created.'
       }
     });
