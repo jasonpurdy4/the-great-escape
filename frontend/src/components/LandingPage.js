@@ -48,6 +48,7 @@ function LandingPage({ onNavigate }) {
     try {
       const response = await fetch(`${API_URL}/api/matches?matchday=${matchweek}`);
       const data = await response.json();
+      console.log('Fetched matches:', data.matches);
       setMatches(data.matches || []);
     } catch (error) {
       console.error('Error fetching matches:', error);
@@ -120,6 +121,7 @@ function LandingPage({ onNavigate }) {
   };
 
   const handleSelectTeam = (team, match) => {
+    console.log('Team clicked:', team.name, 'Match:', match);
     if (isTeamUsed(team.id)) {
       alert('You\'ve already used this team in a previous week!');
       return;
@@ -127,6 +129,7 @@ function LandingPage({ onNavigate }) {
     setSelectedTeam(team);
     setSelectedMatch(match);
     setShowPickConfirmation(true);
+    console.log('Should show confirmation modal now');
   };
 
   const handleClosePickConfirmation = () => {
@@ -229,6 +232,7 @@ function LandingPage({ onNavigate }) {
             <div className="matches-grid">
               {matches.map((match) => {
                 const times = formatDate(match.utcDate);
+                console.log('Rendering match:', match.homeTeam?.name, 'vs', match.awayTeam?.name);
                 return (
                   <div key={match.id} className="match-card">
                     <div className="match-date">
