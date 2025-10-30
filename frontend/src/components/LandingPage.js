@@ -196,11 +196,11 @@ function LandingPage({ onNavigate }) {
                   <div className="stat-label">Current Week</div>
                 </div>
                 <div className="stat">
-                  <div className="stat-value">{poolStats.total_entries}</div>
+                  <div className="stat-value">{poolStats.total_entries || 'N/A'}</div>
                   <div className="stat-label">Entries</div>
                 </div>
                 <div className="stat">
-                  <div className="stat-value">${poolStats.prize_pool?.toFixed(0) || '0'}</div>
+                  <div className="stat-value">{poolStats.prize_pool ? `$${poolStats.prize_pool.toFixed(0)}` : 'N/A'}</div>
                   <div className="stat-label">Prize Pool</div>
                 </div>
                 {timeRemaining && (
@@ -210,9 +210,6 @@ function LandingPage({ onNavigate }) {
                   </div>
                 )}
               </div>
-            )}
-            {!loading && matches.length > 0 && (
-              <p className="hero-note">👇 Pick your team below to join Matchday {currentMatchweek?.matchweek}</p>
             )}
           </div>
         </div>
@@ -326,27 +323,6 @@ function LandingPage({ onNavigate }) {
               <div className="step-number">3</div>
               <h4>Win the Pot</h4>
               <p>Last survivor(s) standing split the entire pot. Winner takes all.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="features section">
-        <div className="container">
-          <h2>Why You'll Love It</h2>
-          <div className="feature-grid">
-            <div className="feature-card card">
-              <h4>🎯 Pure Skill</h4>
-              <p>No odds, no spreads. Just pick winners. Your football knowledge matters.</p>
-            </div>
-            <div className="feature-card card">
-              <h4>📊 Public Leaderboards</h4>
-              <p>See everyone's picks and watch the drama unfold in real-time.</p>
-            </div>
-            <div className="feature-card card">
-              <h4>💰 Weekly Pots</h4>
-              <p>New pool starts every matchday. Multiple chances to win all season.</p>
             </div>
           </div>
         </div>
