@@ -539,8 +539,10 @@ async function createGuestOrder(req, res) {
       }
     };
 
+    console.log('Creating PayPal order with request:', JSON.stringify(request, null, 2));
     const response = await ordersController.ordersCreate(request);
     const order = response.result;
+    console.log('PayPal order created successfully:', order.id);
 
     res.json({
       success: true,
@@ -551,6 +553,10 @@ async function createGuestOrder(req, res) {
     });
   } catch (error) {
     console.error('Create guest order error:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    if (error.response) {
+      console.error('PayPal API Response:', error.response);
+    }
     res.status(500).json({
       success: false,
       error: 'Failed to create payment order'
