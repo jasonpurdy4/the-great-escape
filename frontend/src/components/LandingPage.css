@@ -10,11 +10,11 @@
   overflow-x: hidden;
 }
 
-/* Hero Section - BOLD */
+/* Hero Section - Clean British Design */
 .hero {
   position: relative;
-  background: linear-gradient(135deg, var(--navy) 0%, #0d1821 100%);
-  color: var(--white);
+  background: var(--white);
+  color: var(--navy);
   padding: 120px 0 80px;
   text-align: center;
   min-height: 85vh;
@@ -30,14 +30,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.1;
-  background-image:
-    linear-gradient(45deg, var(--union-jack-red) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--union-jack-red) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--union-jack-red) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--union-jack-red) 75%);
-  background-size: 60px 60px;
-  background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+  opacity: 0.05;
+  background:
+    linear-gradient(90deg, var(--union-jack-red) 2px, transparent 2px),
+    linear-gradient(0deg, var(--union-jack-red) 2px, transparent 2px);
+  background-size: 80px 80px;
   z-index: 0;
 }
 
@@ -76,7 +73,7 @@
   line-height: 1.1;
   margin-bottom: 24px;
   letter-spacing: -2px;
-  color: var(--white);
+  color: var(--navy);
   text-transform: none;
 }
 
@@ -90,12 +87,13 @@
 
 .hero-subtitle {
   font-size: 22px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--navy);
   margin-bottom: 48px;
   font-weight: 400;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  opacity: 0.8;
 }
 
 /* Stats Section */
@@ -109,29 +107,33 @@
 
 .stat {
   text-align: center;
-  padding: 20px 32px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 24px 40px;
+  background: var(--white);
+  border-radius: 16px;
+  border: 3px solid var(--union-jack-red);
+  box-shadow: 0 8px 24px rgba(200, 16, 46, 0.15);
+  transition: all 0.3s ease;
+}
+
+.stat:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(200, 16, 46, 0.25);
 }
 
 .stat-value {
   font-size: 56px;
   font-weight: 900;
-  color: var(--white);
+  color: var(--union-jack-red);
   line-height: 1;
   margin-bottom: 8px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .stat-label {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--white);
+  color: var(--navy);
   font-weight: 600;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .hero-cta {
@@ -140,9 +142,10 @@
 
 .hero-note {
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--navy);
   margin-top: 16px;
   font-weight: 400;
+  opacity: 0.6;
 }
 
 .email-signup {
@@ -160,25 +163,24 @@
   font-size: 16px;
   padding: 18px 24px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--white);
+  border: 2px solid var(--navy);
+  background: var(--white);
+  color: var(--navy);
   min-width: 300px;
   flex: 1;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .email-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(26, 35, 50, 0.4);
 }
 
 .email-input:focus {
   outline: none;
   border-color: var(--union-jack-red);
-  background: rgba(255, 255, 255, 0.15);
+  border-width: 3px;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(200, 16, 46, 0.3);
+  box-shadow: 0 8px 24px rgba(200, 16, 46, 0.2);
 }
 
 /* Team Crests Scrolling Section */
