@@ -205,11 +205,11 @@ function LandingPage({ onNavigate }) {
                   <div className="stat-label">Current Week</div>
                 </div>
                 <div className="stat">
-                  <div className="stat-value">{poolStats.total_entries || 'N/A'}</div>
+                  <div className="stat-value">{poolStats.total_entries !== undefined && poolStats.total_entries !== null ? poolStats.total_entries : 'N/A'}</div>
                   <div className="stat-label">Entries</div>
                 </div>
                 <div className="stat">
-                  <div className="stat-value">{poolStats.prize_pool ? `$${poolStats.prize_pool.toFixed(0)}` : 'N/A'}</div>
+                  <div className="stat-value">{poolStats.prize_pool !== undefined && poolStats.prize_pool !== null ? `$${poolStats.prize_pool.toFixed(0)}` : 'N/A'}</div>
                   <div className="stat-label">Prize Pool</div>
                 </div>
                 {timeRemaining && (
