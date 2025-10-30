@@ -109,22 +109,29 @@
 
 .stat {
   text-align: center;
+  padding: 20px 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .stat-value {
   font-size: 56px;
   font-weight: 900;
-  color: var(--union-jack-red);
+  color: var(--white);
   line-height: 1;
   margin-bottom: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .stat-label {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white);
   font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .hero-cta {
