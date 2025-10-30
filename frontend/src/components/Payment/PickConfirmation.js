@@ -63,11 +63,16 @@ function PickConfirmation({
           try {
             console.log('Creating PayPal order with:', {
               url: `${process.env.REACT_APP_API_URL}/api/payments/guest/create-order`,
-              poolId,
+              poolId: poolId,
+              poolIdType: typeof poolId,
               teamId: selectedTeam.id,
               teamName: selectedTeam.name,
               matchId: match.id
             });
+
+            if (!poolId) {
+              throw new Error('Pool ID is missing! Cannot create order.');
+            }
 
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/payments/guest/create-order`, {
               method: 'POST',
