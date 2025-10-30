@@ -21,6 +21,9 @@ function PickConfirmation({
     console.log('PayPal Client ID:', process.env.REACT_APP_PAYPAL_CLIENT_ID);
     console.log('API URL:', process.env.REACT_APP_API_URL);
 
+    // Track if component is still mounted
+    let isMounted = true;
+
     // Load PayPal SDK
     const loadPayPalScript = () => {
       if (!process.env.REACT_APP_PAYPAL_CLIENT_ID) {
@@ -41,12 +44,16 @@ function PickConfirmation({
       script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}&currency=USD`;
       script.addEventListener('load', () => {
         console.log('PayPal SDK loaded successfully');
-        renderPayPalButton();
+        if (isMounted) {
+          renderPayPalButton();
+        }
       });
       script.addEventListener('error', () => {
         console.error('Failed to load PayPal SDK');
-        setError('Failed to load PayPal');
-        setLoading(false);
+        if (isMounted) {
+          setError('Failed to load PayPal');
+          setLoading(false);
+        }
       });
       document.body.appendChild(script);
     };
@@ -56,6 +63,9 @@ function PickConfirmation({
         console.error('paypalRef.current is null!');
         return;
       }
+
+      // Clear any existing buttons before rendering new ones
+      paypalRef.current.innerHTML = '';
 
       console.log('Rendering PayPal button...');
       window.paypal.Buttons({
@@ -131,7 +141,15 @@ function PickConfirmation({
     };
 
     loadPayPalScript();
-  }, [selectedTeam, match, poolId, onSuccess]);
+
+    // Cleanup function to prevent multiple renders
+    return () => {
+      isMounted = false;
+      if (paypalRef.current) {
+        paypalRef.current.innerHTML = '';
+      }
+    };
+  }, [selectedTeam, match, poolId]); // Removed onSuccess from dependencies
 
   if (!selectedTeam || !match) return null;
 
