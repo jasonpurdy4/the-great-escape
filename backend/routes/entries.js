@@ -1,7 +1,7 @@
 // Entries Routes - User entry management
 const express = require('express');
 const router = express.Router();
-const { query } = require('../db');
+const { query } = require('../db/connection');
 const { verifyToken } = require('../utils/jwt');
 
 // Middleware to verify JWT token
