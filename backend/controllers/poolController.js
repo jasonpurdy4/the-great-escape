@@ -1,9 +1,9 @@
-const pool = require('../db/pool');
+const { query } = require('../db/connection');
 
 // Get current active matchweek/pool
 exports.getCurrentMatchweek = async (req, res) => {
   try {
-    const result = await pool.query(
+    const result = await query(
       `SELECT id as pool_id, gameweek as matchweek, entry_deadline as deadline, status
        FROM pools
        WHERE status = 'active' AND entry_deadline > NOW()
@@ -27,7 +27,7 @@ exports.getPoolStats = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await pool.query(
+    const result = await query(
       `SELECT
         id,
         gameweek as matchweek,
@@ -67,13 +67,13 @@ exports.getPickDistribution = async (req, res) => {
     const { id } = req.params;
 
     // First verify pool exists
-    const poolCheck = await pool.query('SELECT id FROM pools WHERE id = $1', [id]);
+    const poolCheck = await query('SELECT id FROM pools WHERE id = $1', [id]);
     if (poolCheck.rows.length === 0) {
       return res.status(404).json({ error: 'Pool not found' });
     }
 
     // Get distribution of team picks
-    const result = await pool.query(
+    const result = await query(
       `SELECT
         team_name,
         COUNT(*) as pick_count
@@ -102,7 +102,7 @@ exports.getAllPools = async (req, res) => {
   try {
     const { status } = req.query;
 
-    let query = `
+    let sql = `
       SELECT
         id,
         gameweek as matchweek,
@@ -120,13 +120,13 @@ exports.getAllPools = async (req, res) => {
     const params = [];
 
     if (status) {
-      query += ' WHERE status = $1';
+      sql += ' WHERE status = $1';
       params.push(status);
     }
 
-    query += ' ORDER BY gameweek ASC';
+    sql += ' ORDER BY gameweek ASC';
 
-    const result = await pool.query(query, params);
+    const result = await query(sql, params);
 
     // Convert cents to dollars
     const pools = result.rows.map(p => ({
