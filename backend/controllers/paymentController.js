@@ -583,8 +583,13 @@ async function captureGuestOrder(req, res) {
       });
     }
 
-    // Extract custom data - handle both snake_case and camelCase
-    const customIdString = capturedOrder.purchase_units?.[0]?.custom_id || capturedOrder.purchaseUnits?.[0]?.customId;
+    // Extract custom data - it's nested in payments.captures[0].customId
+    const customIdString =
+      capturedOrder.purchaseUnits?.[0]?.payments?.captures?.[0]?.customId ||
+      capturedOrder.purchase_units?.[0]?.payments?.captures?.[0]?.custom_id ||
+      capturedOrder.purchaseUnits?.[0]?.customId ||
+      capturedOrder.purchase_units?.[0]?.custom_id;
+
     console.log('Custom ID string:', customIdString);
 
     if (!customIdString) {
