@@ -369,7 +369,7 @@ function LandingPage({ onNavigate }) {
 
       {showSignupPayment && selectedTeam && selectedMatch && poolStats && (
         <SignupPayment
-          team={selectedTeam}
+          selectedTeam={selectedTeam}
           match={selectedMatch}
           poolId={poolStats.id}
           matchId={selectedMatch.id}
