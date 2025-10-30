@@ -1,19 +1,16 @@
 // Payment Routes
 const express = require('express');
 const router = express.Router();
-const { createOrder, captureOrder, purchaseWithBalance } = require('../controllers/paymentController');
+const { createOrder, captureOrder, purchaseWithBalance, createGuestOrder, captureGuestOrder } = require('../controllers/paymentController');
 const { authenticate } = require('../middleware/auth');
 
-// All payment routes require authentication
-router.use(authenticate);
+// Guest payment routes (no auth required)
+router.post('/guest/create-order', createGuestOrder);
+router.post('/guest/capture-order', captureGuestOrder);
 
-// Create PayPal order
-router.post('/create-order', createOrder);
-
-// Capture PayPal payment
-router.post('/capture-order', captureOrder);
-
-// Purchase with account balance
-router.post('/purchase-with-balance', purchaseWithBalance);
+// Authenticated payment routes
+router.post('/create-order', authenticate, createOrder);
+router.post('/capture-order', authenticate, captureOrder);
+router.post('/purchase-with-balance', authenticate, purchaseWithBalance);
 
 module.exports = router;

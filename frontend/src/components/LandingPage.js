@@ -148,19 +148,15 @@ function LandingPage({ onNavigate }) {
     setSelectedMatch(null);
   };
 
-  const handleConfirmPick = () => {
-    // User is not authenticated, show signup/payment
+  const handlePaymentSuccess = (data) => {
+    console.log('Payment successful:', data);
     setShowPickConfirmation(false);
-    setShowSignupPayment(true);
-  };
-
-  const handleCompleteSignupPayment = (data) => {
-    // After successful payment, close modal and show success
-    setShowSignupPayment(false);
     setSelectedTeam(null);
     setSelectedMatch(null);
-    // TODO: Show referral modal here
-    alert('Pick confirmed! Welcome to The Great Escape!');
+
+    // TODO: Show referral modal
+    alert(`Pick confirmed! Welcome to The Great Escape!\n\nEntry #${data.entryNumber} created.\n\nCheck your email for login details.`);
+
     // TODO: Navigate to dashboard or show referral modal
   };
 
@@ -357,24 +353,13 @@ function LandingPage({ onNavigate }) {
         hasSelectedMatch: !!selectedMatch,
         willRenderModal: showPickConfirmation && selectedTeam && selectedMatch
       })}
-      {showPickConfirmation && selectedTeam && selectedMatch && (
+      {showPickConfirmation && selectedTeam && selectedMatch && poolStats && (
         <PickConfirmation
           selectedTeam={selectedTeam}
           match={selectedMatch}
-          onConfirm={handleConfirmPick}
+          poolId={poolStats.pool_id}
+          onSuccess={handlePaymentSuccess}
           onClose={handleClosePickConfirmation}
-          isAuthenticated={false}
-        />
-      )}
-
-      {showSignupPayment && selectedTeam && selectedMatch && poolStats && (
-        <SignupPayment
-          selectedTeam={selectedTeam}
-          match={selectedMatch}
-          poolId={poolStats.id}
-          matchId={selectedMatch.id}
-          onComplete={handleCompleteSignupPayment}
-          onClose={() => setShowSignupPayment(false)}
         />
       )}
     </div>

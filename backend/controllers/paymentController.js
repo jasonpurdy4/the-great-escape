@@ -473,8 +473,312 @@ async function purchaseWithBalance(req, res) {
   }
 }
 
+// Guest create order (no auth required)
+async function createGuestOrder(req, res) {
+  try {
+    const { poolId, teamId, teamName, matchId } = req.body;
+
+    // Validate pool exists and is active
+    const poolResult = await query(
+      'SELECT id, gameweek, status, entry_deadline FROM pools WHERE id = $1',
+      [poolId]
+    );
+
+    if (poolResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Pool not found'
+      });
+    }
+
+    const pool = poolResult.rows[0];
+
+    // Check if pool is accepting entries
+    if (pool.status === 'completed') {
+      return res.status(400).json({
+        success: false,
+        error: 'This pool has already ended'
+      });
+    }
+
+    // Check deadline
+    if (new Date() > new Date(pool.entry_deadline)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Entry deadline has passed'
+      });
+    }
+
+    // Create PayPal order
+    const request = {
+      body: {
+        intent: 'CAPTURE',
+        purchaseUnits: [
+          {
+            amount: {
+              currencyCode: 'USD',
+              value: '10.00'
+            },
+            description: `The Great Escape - Matchday ${pool.gameweek} Entry`,
+            customId: JSON.stringify({
+              poolId,
+              teamId,
+              teamName,
+              matchId,
+              guest: true
+            })
+          }
+        ],
+        applicationContext: {
+          returnUrl: `${process.env.FRONTEND_URL}/payment/success`,
+          cancelUrl: `${process.env.FRONTEND_URL}/payment/cancel`,
+          brandName: 'The Great Escape',
+          landingPage: 'BILLING',
+          userAction: 'PAY_NOW'
+        }
+      }
+    };
+
+    const response = await ordersController.ordersCreate(request);
+    const order = response.result;
+
+    res.json({
+      success: true,
+      data: {
+        orderId: order.id,
+        approvalUrl: order.links.find(link => link.rel === 'approve').href
+      }
+    });
+  } catch (error) {
+    console.error('Create guest order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create payment order'
+    });
+  }
+}
+
+// Guest capture order - Auto-creates account from PayPal data
+async function captureGuestOrder(req, res) {
+  try {
+    const { orderId } = req.body;
+
+    // Capture the payment
+    const request = { id: orderId };
+    const response = await ordersController.ordersCapture(request);
+    const capturedOrder = response.result;
+
+    if (capturedOrder.status !== 'COMPLETED') {
+      return res.status(400).json({
+        success: false,
+        error: 'Payment not completed'
+      });
+    }
+
+    // Extract custom data
+    const customData = JSON.parse(capturedOrder.purchaseUnits[0].customId);
+    const { poolId, teamId, teamName, matchId } = customData;
+
+    // Extract PayPal payer data
+    const paypalPayerId = capturedOrder.payer?.payer_id;
+    const payerEmail = capturedOrder.payer?.email_address;
+    const payerName = capturedOrder.payer?.name;
+
+    if (!paypalPayerId || !payerEmail) {
+      return res.status(400).json({
+        success: false,
+        error: 'PayPal payer information not found'
+      });
+    }
+
+    // Check if user already exists with this PayPal account
+    let userId;
+    const existingUserResult = await query(
+      'SELECT id FROM users WHERE paypal_payer_id = $1',
+      [paypalPayerId]
+    );
+
+    if (existingUserResult.rows.length > 0) {
+      // User exists, use their ID
+      userId = existingUserResult.rows[0].id;
+    } else {
+      // Create new user from PayPal data
+      const firstName = payerName?.given_name || 'Guest';
+      const lastName = payerName?.surname || 'User';
+
+      // Generate a random password (they'll use PayPal to login)
+      const tempPassword = Math.random().toString(36).slice(-12);
+      const bcrypt = require('bcrypt');
+      const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+      const newUserResult = await query(
+        `INSERT INTO users (
+          email, password_hash, first_name, last_name,
+          paypal_payer_id, paypal_email, account_status
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id`,
+        [
+          payerEmail,
+          passwordHash,
+          firstName,
+          lastName,
+          paypalPayerId,
+          payerEmail,
+          'active'
+        ]
+      );
+
+      userId = newUserResult.rows[0].id;
+
+      // Log registration in audit log
+      await query(
+        `INSERT INTO audit_log (user_id, event_type, event_data, ip_address)
+         VALUES ($1, $2, $3, $4)`,
+        [
+          userId,
+          'user_registered_via_paypal',
+          JSON.stringify({ email: payerEmail, orderId }),
+          req.ip || req.connection.remoteAddress
+        ]
+      );
+    }
+
+    // Now process the entry (same as authenticated flow)
+    const result = await transaction(async (client) => {
+      // 1. Add $10 to user balance
+      await client.query(
+        'UPDATE users SET balance_cents = balance_cents + 1000 WHERE id = $1',
+        [userId]
+      );
+
+      // 2. Record deposit transaction
+      const depositResult = await client.query(
+        `INSERT INTO transactions (
+          user_id, type, status, amount_cents, fee_cents, net_amount_cents,
+          payment_provider, provider_transaction_id, payment_method, pool_id, description
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING id`,
+        [
+          userId,
+          'deposit',
+          'completed',
+          1000,
+          0,
+          1000,
+          'paypal',
+          orderId,
+          'paypal',
+          poolId,
+          'Entry fee payment via PayPal'
+        ]
+      );
+
+      const depositTransactionId = depositResult.rows[0].id;
+
+      // 3. Get next entry number for this user/pool
+      const entryCountResult = await client.query(
+        'SELECT COALESCE(MAX(entry_number), 0) as max_entry FROM entries WHERE user_id = $1 AND pool_id = $2',
+        [userId, poolId]
+      );
+      const nextEntryNumber = entryCountResult.rows[0].max_entry + 1;
+
+      // 4. Create entry
+      const entryResult = await client.query(
+        `INSERT INTO entries (user_id, pool_id, entry_number, status, entry_fee_cents, transaction_id)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         RETURNING id`,
+        [userId, poolId, nextEntryNumber, 'active', 1000, depositTransactionId]
+      );
+
+      const entryId = entryResult.rows[0].id;
+
+      // 5. Deduct $10 from balance
+      await client.query(
+        'UPDATE users SET balance_cents = balance_cents - 1000 WHERE id = $1',
+        [userId]
+      );
+
+      // 6. Record entry purchase transaction
+      await client.query(
+        `INSERT INTO transactions (
+          user_id, type, status, amount_cents, fee_cents, net_amount_cents,
+          payment_provider, pool_id, entry_id, description
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          userId,
+          'entry_purchase',
+          'completed',
+          1000,
+          0,
+          1000,
+          'balance',
+          poolId,
+          entryId,
+          `Entry purchase for Matchday ${poolId}`
+        ]
+      );
+
+      // 7. Create pick if team was selected
+      if (teamId && teamName) {
+        const poolResult = await client.query('SELECT gameweek FROM pools WHERE id = $1', [poolId]);
+        const gameweek = poolResult.rows[0].gameweek;
+
+        await client.query(
+          `INSERT INTO picks (entry_id, gameweek, pool_id, team_id, team_name, match_id, result)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [entryId, gameweek, poolId, teamId, teamName, matchId, 'pending']
+        );
+      }
+
+      // 8. Update pool totals
+      await client.query(
+        `UPDATE pools SET
+          total_entries = total_entries + 1,
+          prize_pool_cents = prize_pool_cents + 1000,
+          platform_fee_cents = prize_pool_cents * 0.1,
+          winner_payout_cents = prize_pool_cents * 0.9
+         WHERE id = $1`,
+        [poolId]
+      );
+
+      return { entryId, entryNumber: nextEntryNumber };
+    });
+
+    // Log in audit log
+    await query(
+      `INSERT INTO audit_log (user_id, event_type, event_data, ip_address)
+       VALUES ($1, $2, $3, $4)`,
+      [
+        userId,
+        'entry_purchased_guest',
+        JSON.stringify({ poolId, entryId: result.entryId, orderId }),
+        req.ip || req.connection.remoteAddress
+      ]
+    );
+
+    res.json({
+      success: true,
+      data: {
+        entryId: result.entryId,
+        entryNumber: result.entryNumber,
+        userId: userId,
+        email: payerEmail,
+        message: 'Entry purchased successfully! Account created.'
+      }
+    });
+  } catch (error) {
+    console.error('Capture guest order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to process payment'
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   captureOrder,
-  purchaseWithBalance
+  purchaseWithBalance,
+  createGuestOrder,
+  captureGuestOrder
 };
