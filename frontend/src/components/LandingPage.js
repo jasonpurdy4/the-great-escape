@@ -351,7 +351,9 @@ function LandingPage({ onNavigate }) {
         showPickConfirmation,
         hasSelectedTeam: !!selectedTeam,
         hasSelectedMatch: !!selectedMatch,
-        willRenderModal: showPickConfirmation && selectedTeam && selectedMatch
+        hasPoolStats: !!poolStats,
+        poolStatsPoolId: poolStats?.pool_id,
+        willRenderModal: showPickConfirmation && selectedTeam && selectedMatch && poolStats
       })}
       {showPickConfirmation && selectedTeam && selectedMatch && poolStats && (
         <PickConfirmation
