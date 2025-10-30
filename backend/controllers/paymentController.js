@@ -64,8 +64,8 @@ async function createOrder(req, res) {
           }
         ],
         applicationContext: {
-          returnUrl: `${process.env.FRONTEND_URL}/payment/success`,
-          cancelUrl: `${process.env.FRONTEND_URL}/payment/cancel`,
+          returnUrl: `${process.env.FRONTEND_URL || 'https://the-great-escape-frontend-production.up.railway.app'}/payment/success`,
+          cancelUrl: `${process.env.FRONTEND_URL || 'https://the-great-escape-frontend-production.up.railway.app'}/payment/cancel`,
           brandName: 'The Great Escape',
           landingPage: 'BILLING',
           userAction: 'PAY_NOW'
@@ -530,8 +530,8 @@ async function createGuestOrder(req, res) {
           }
         ],
         applicationContext: {
-          returnUrl: `${process.env.FRONTEND_URL}/payment/success`,
-          cancelUrl: `${process.env.FRONTEND_URL}/payment/cancel`,
+          returnUrl: `${process.env.FRONTEND_URL || 'https://the-great-escape-frontend-production.up.railway.app'}/payment/success`,
+          cancelUrl: `${process.env.FRONTEND_URL || 'https://the-great-escape-frontend-production.up.railway.app'}/payment/cancel`,
           brandName: 'The Great Escape',
           landingPage: 'BILLING',
           userAction: 'PAY_NOW'
