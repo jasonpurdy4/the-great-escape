@@ -29,5 +29,5 @@ COPY --from=builder /app/build ./build
 # Expose port (Railway uses $PORT)
 EXPOSE 8080
 
-# Start command
-CMD serve -s build -l ${PORT:-8080}
+# Start command (use array syntax for proper signal handling)
+CMD ["sh", "-c", "serve -s build -l $PORT"]
