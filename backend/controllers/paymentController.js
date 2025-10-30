@@ -574,6 +574,8 @@ async function captureGuestOrder(req, res) {
     const response = await ordersController.captureOrder(request);
     const capturedOrder = response.result;
 
+    console.log('Captured order:', JSON.stringify(capturedOrder, null, 2));
+
     if (capturedOrder.status !== 'COMPLETED') {
       return res.status(400).json({
         success: false,
@@ -581,8 +583,19 @@ async function captureGuestOrder(req, res) {
       });
     }
 
-    // Extract custom data
-    const customData = JSON.parse(capturedOrder.purchaseUnits[0].customId);
+    // Extract custom data - handle both snake_case and camelCase
+    const customIdString = capturedOrder.purchase_units?.[0]?.custom_id || capturedOrder.purchaseUnits?.[0]?.customId;
+    console.log('Custom ID string:', customIdString);
+
+    if (!customIdString) {
+      console.error('No custom_id found in captured order');
+      return res.status(400).json({
+        success: false,
+        error: 'Order metadata not found'
+      });
+    }
+
+    const customData = JSON.parse(customIdString);
     const { poolId, teamId, teamName, matchId } = customData;
 
     // Extract PayPal payer data
