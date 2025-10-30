@@ -20,17 +20,36 @@ function PickConfirmation({
     : match.homeTeam.name;
 
   useEffect(() => {
+    console.log('PickConfirmation mounted');
+    console.log('poolId:', poolId);
+    console.log('selectedTeam:', selectedTeam);
+    console.log('PayPal Client ID:', process.env.REACT_APP_PAYPAL_CLIENT_ID);
+    console.log('API URL:', process.env.REACT_APP_API_URL);
+
     // Load PayPal SDK
     const loadPayPalScript = () => {
+      if (!process.env.REACT_APP_PAYPAL_CLIENT_ID) {
+        setError('PayPal Client ID not configured');
+        setLoading(false);
+        console.error('REACT_APP_PAYPAL_CLIENT_ID is missing!');
+        return;
+      }
+
       if (window.paypal) {
+        console.log('PayPal SDK already loaded, rendering button');
         renderPayPalButton();
         return;
       }
 
+      console.log('Loading PayPal SDK...');
       const script = document.createElement('script');
       script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}&currency=USD`;
-      script.addEventListener('load', renderPayPalButton);
+      script.addEventListener('load', () => {
+        console.log('PayPal SDK loaded successfully');
+        renderPayPalButton();
+      });
       script.addEventListener('error', () => {
+        console.error('Failed to load PayPal SDK');
         setError('Failed to load PayPal');
         setLoading(false);
       });
@@ -38,8 +57,12 @@ function PickConfirmation({
     };
 
     const renderPayPalButton = () => {
-      if (!paypalRef.current) return;
+      if (!paypalRef.current) {
+        console.error('paypalRef.current is null!');
+        return;
+      }
 
+      console.log('Rendering PayPal button...');
       window.paypal.Buttons({
         createOrder: async () => {
           try {
