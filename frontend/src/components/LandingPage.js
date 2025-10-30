@@ -83,6 +83,13 @@ function LandingPage({ onNavigate }) {
     initializeData();
   }, [fetchCurrentMatchweek, fetchPoolStats, fetchMatches, fetchTeams]);
 
+  // Debug: Log when showPickConfirmation changes
+  useEffect(() => {
+    console.log('showPickConfirmation changed to:', showPickConfirmation);
+    console.log('selectedTeam:', selectedTeam);
+    console.log('selectedMatch:', selectedMatch);
+  }, [showPickConfirmation, selectedTeam, selectedMatch]);
+
   // Countdown timer
   useEffect(() => {
     if (!poolStats || !poolStats.deadline) return;
@@ -126,10 +133,13 @@ function LandingPage({ onNavigate }) {
       alert('You\'ve already used this team in a previous week!');
       return;
     }
+    console.log('Setting selectedTeam:', team);
+    console.log('Setting selectedMatch:', match);
     setSelectedTeam(team);
     setSelectedMatch(match);
+    console.log('Setting showPickConfirmation to true');
     setShowPickConfirmation(true);
-    console.log('Should show confirmation modal now');
+    console.log('State updated - modal should appear');
   };
 
   const handleClosePickConfirmation = () => {
@@ -341,9 +351,15 @@ function LandingPage({ onNavigate }) {
       </footer>
 
       {/* Modals */}
+      {console.log('Modal render check:', {
+        showPickConfirmation,
+        hasSelectedTeam: !!selectedTeam,
+        hasSelectedMatch: !!selectedMatch,
+        willRenderModal: showPickConfirmation && selectedTeam && selectedMatch
+      })}
       {showPickConfirmation && selectedTeam && selectedMatch && (
         <PickConfirmation
-          team={selectedTeam}
+          selectedTeam={selectedTeam}
           match={selectedMatch}
           onConfirm={handleConfirmPick}
           onClose={handleClosePickConfirmation}
