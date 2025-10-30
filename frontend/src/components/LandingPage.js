@@ -352,14 +352,14 @@ function LandingPage({ onNavigate }) {
         hasSelectedTeam: !!selectedTeam,
         hasSelectedMatch: !!selectedMatch,
         hasPoolStats: !!poolStats,
-        poolStatsPoolId: poolStats?.pool_id,
+        poolId: poolStats?.id,
         willRenderModal: showPickConfirmation && selectedTeam && selectedMatch && poolStats
       })}
       {showPickConfirmation && selectedTeam && selectedMatch && poolStats && (
         <PickConfirmation
           selectedTeam={selectedTeam}
           match={selectedMatch}
-          poolId={poolStats.pool_id}
+          poolId={poolStats.id}
           onSuccess={handlePaymentSuccess}
           onClose={handleClosePickConfirmation}
         />
