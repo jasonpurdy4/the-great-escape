@@ -1,4 +1,4 @@
-// Pick Confirmation Modal - Payment-first flow
+// Pick Confirmation Modal - Payment-first flow with PayPal sandbox
 import React, { useEffect, useRef, useState } from 'react';
 import './Payment.css';
 
