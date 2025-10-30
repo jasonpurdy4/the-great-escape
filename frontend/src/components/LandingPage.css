@@ -31,7 +31,24 @@
   right: 0;
   bottom: 0;
   z-index: 0;
-  /* Clean white background - no pattern */
+  opacity: 0.03;
+  background-image:
+    /* White cross (vertical) */
+    linear-gradient(90deg, transparent 40%, var(--white) 40%, var(--white) 60%, transparent 60%),
+    /* White cross (horizontal) */
+    linear-gradient(0deg, transparent 40%, var(--white) 40%, var(--white) 60%, transparent 60%),
+    /* Red cross (vertical - thinner) */
+    linear-gradient(90deg, transparent 44%, var(--union-jack-red) 44%, var(--union-jack-red) 56%, transparent 56%),
+    /* Red cross (horizontal - thinner) */
+    linear-gradient(0deg, transparent 44%, var(--union-jack-red) 44%, var(--union-jack-red) 56%, transparent 56%),
+    /* Diagonal red lines - top-left to bottom-right */
+    repeating-linear-gradient(45deg, transparent, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%, transparent 100%),
+    /* Diagonal red lines - top-right to bottom-left */
+    repeating-linear-gradient(-45deg, transparent, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%, transparent 100%),
+    /* Navy blue background */
+    var(--premier-league-purple);
+  background-size: 100% 100%;
+  background-position: center;
 }
 
 .hero-content {
