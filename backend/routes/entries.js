@@ -31,7 +31,7 @@ router.get('/my', authenticate, async (req, res) => {
         e.pool_id,
         e.entry_number,
         e.status,
-        e.eliminated_gameweek,
+        e.elimination_gameweek,
         e.entry_fee_cents,
         e.created_at,
         p.gameweek as pool_gameweek,
@@ -124,8 +124,7 @@ router.get('/stats', authenticate, async (req, res) => {
         COUNT(CASE WHEN status = 'active' THEN 1 END) as active_entries,
         COUNT(CASE WHEN status = 'eliminated' THEN 1 END) as eliminated_entries,
         COUNT(CASE WHEN status = 'winner' THEN 1 END) as winning_entries,
-        SUM(entry_fee_cents) as total_spent_cents,
-        COALESCE(SUM(CASE WHEN status = 'winner' THEN payout_cents ELSE 0 END), 0) as total_winnings_cents
+        SUM(entry_fee_cents) as total_spent_cents
        FROM entries
        WHERE user_id = $1`,
       [req.userId]
@@ -141,7 +140,7 @@ router.get('/stats', authenticate, async (req, res) => {
         eliminatedEntries: parseInt(stats.eliminated_entries) || 0,
         winningEntries: parseInt(stats.winning_entries) || 0,
         totalSpent: (parseInt(stats.total_spent_cents) || 0) / 100,
-        totalWinnings: (parseInt(stats.total_winnings_cents) || 0) / 100
+        totalWinnings: 0 // TODO: Calculate from payouts table when winners are determined
       }
     });
   } catch (error) {
