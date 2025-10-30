@@ -13,13 +13,8 @@ function PickConfirmation({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  if (!selectedTeam || !match) return null;
-
-  const opponent = match.homeTeam.id === selectedTeam.id
-    ? match.awayTeam.name
-    : match.homeTeam.name;
-
   useEffect(() => {
+    if (!selectedTeam || !match) return;
     console.log('PickConfirmation mounted');
     console.log('poolId:', poolId);
     console.log('selectedTeam:', selectedTeam);
@@ -114,6 +109,12 @@ function PickConfirmation({
 
     loadPayPalScript();
   }, [selectedTeam, match, poolId, onSuccess]);
+
+  if (!selectedTeam || !match) return null;
+
+  const opponent = match.homeTeam.id === selectedTeam.id
+    ? match.awayTeam.name
+    : match.homeTeam.name;
 
   return (
     <div className="confirmation-overlay" onClick={onClose}>
