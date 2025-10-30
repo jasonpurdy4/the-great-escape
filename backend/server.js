@@ -15,6 +15,7 @@ const authRoutes = require('./routes/auth');
 const paymentRoutes = require('./routes/payments');
 const referralRoutes = require('./routes/referrals');
 const poolRoutes = require('./routes/pools');
+const entryRoutes = require('./routes/entries');
 
 // Football Data API configuration
 const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
@@ -26,6 +27,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/pools', poolRoutes);
 app.use('/api/matchweeks', poolRoutes); // Alias for semantic clarity
+app.use('/api/entries', entryRoutes);
 
 // Test route
 app.get('/api/health', (req, res) => {

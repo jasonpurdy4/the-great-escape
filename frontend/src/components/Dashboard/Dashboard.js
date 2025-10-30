@@ -8,18 +8,63 @@ import Referral from './Referral';
 import './Dashboard.css';
 
 function Dashboard({ onNavigate }) {
-  const { user, balance, credits, totalFunds, logout } = useAuth();
+  const { user, balance, credits, totalFunds, logout, token } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [entries, setEntries] = useState([]);
+  const [stats, setStats] = useState(null);
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     fetchUserData();
   }, []);
 
   const fetchUserData = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
-      // TODO: Fetch user's active entries from API
-      // const response = await getMyEntries();
+
+      // Fetch user's entries
+      const entriesResponse = await fetch(`${API_URL}/api/entries/my`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const entriesData = await entriesResponse.json();
+
+      if (entriesData.success) {
+        // Transform snake_case API response to camelCase for frontend
+        const transformedEntries = entriesData.data.map(entry => ({
+          id: entry.id,
+          poolId: entry.pool_gameweek,
+          entryNumber: entry.entry_number,
+          status: entry.status,
+          createdAt: entry.created_at,
+          eliminatedGameweek: entry.eliminated_gameweek,
+          totalPicks: entry.total_picks,
+          winningPicks: entry.winning_picks,
+          losingPicks: entry.losing_picks,
+          poolStatus: entry.pool_status
+        }));
+        setEntries(transformedEntries);
+      }
+
+      // Fetch user's stats
+      const statsResponse = await fetch(`${API_URL}/api/entries/stats`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const statsData = await statsResponse.json();
+
+      if (statsData.success) {
+        setStats(statsData.data);
+      }
+
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -70,7 +115,7 @@ function Dashboard({ onNavigate }) {
         {/* My Active Picks */}
         <div className="dashboard-section">
           <h2 className="section-title">My Active Picks</h2>
-          <MyPicks entries={[]} onRefresh={fetchUserData} />
+          <MyPicks entries={entries} onRefresh={fetchUserData} />
         </div>
 
         {/* Referral Section - MASSIVE */}
