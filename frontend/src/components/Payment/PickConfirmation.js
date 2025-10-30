@@ -61,6 +61,14 @@ function PickConfirmation({
       window.paypal.Buttons({
         createOrder: async () => {
           try {
+            console.log('Creating PayPal order with:', {
+              url: `${process.env.REACT_APP_API_URL}/api/payments/guest/create-order`,
+              poolId,
+              teamId: selectedTeam.id,
+              teamName: selectedTeam.name,
+              matchId: match.id
+            });
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/payments/guest/create-order`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -71,7 +79,17 @@ function PickConfirmation({
                 matchId: match.id
               })
             });
+
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error('Backend error response:', errorText);
+              throw new Error(`Backend returned ${response.status}: ${errorText}`);
+            }
+
             const data = await response.json();
+            console.log('Order created:', data);
             return data.data.orderId;
           } catch (err) {
             console.error('Error creating order:', err);
