@@ -7,11 +7,13 @@ function PickConfirmation({
   match,
   poolId,
   onClose,
-  onSuccess
+  onSuccess,
+  initialReferralCode = '' // Support passing referral code from URL
 }) {
   const paypalRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [referralCode, setReferralCode] = useState(initialReferralCode);
 
   useEffect(() => {
     if (!selectedTeam || !match) return;
@@ -114,10 +116,21 @@ function PickConfirmation({
         },
         onApprove: async (data) => {
           try {
+            const requestBody = {
+              orderId: data.orderID
+            };
+
+            // Add referral code if provided
+            if (referralCode && referralCode.trim()) {
+              requestBody.referralCode = referralCode.trim().toUpperCase();
+            }
+
+            console.log('Capturing order with:', requestBody);
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/payments/guest/capture-order`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ orderId: data.orderID })
+              body: JSON.stringify(requestBody)
             });
             const result = await response.json();
 
@@ -172,6 +185,28 @@ function PickConfirmation({
           <p className="modal-opponent">vs {opponent}</p>
 
           <p className="modal-subtitle">$10 Entry</p>
+
+          {/* Referral Code Input */}
+          <div className="referral-input-section">
+            <label htmlFor="referralCode" className="referral-label">
+              Have a referral code? (Optional)
+            </label>
+            <input
+              id="referralCode"
+              type="text"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+              placeholder="Enter code (e.g. TGE123)"
+              className="referral-input"
+              maxLength={12}
+              disabled={loading}
+            />
+            {referralCode && (
+              <p className="referral-note">
+                You and your friend will both get $10 credit after your first payment! 🎉
+              </p>
+            )}
+          </div>
 
           {error && (
             <div className="error-box">

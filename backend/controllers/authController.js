@@ -451,10 +451,207 @@ async function verifyPayPalLogin(req, res) {
   }
 }
 
+// ============================================
+// PayPal OAuth 2.0 Identity API (Proper Implementation)
+// ============================================
+
+/**
+ * Initiate PayPal OAuth Login Flow
+ * Returns the authorization URL to redirect user to PayPal
+ */
+async function initiatePayPalOAuth(req, res) {
+  try {
+    const { identityConfig } = require('../config/paypal');
+
+    // Get redirect URI from request or use default
+    const redirectUri = req.body.redirectUri || `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/paypal/callback`;
+
+    // Generate random state for CSRF protection
+    const state = require('crypto').randomBytes(32).toString('hex');
+
+    // Build authorization URL
+    const authUrl = new URL(identityConfig.authorizationUrl);
+    authUrl.searchParams.append('client_id', identityConfig.clientId);
+    authUrl.searchParams.append('response_type', 'code');
+    authUrl.searchParams.append('scope', identityConfig.defaultScopes);
+    authUrl.searchParams.append('redirect_uri', redirectUri);
+    authUrl.searchParams.append('state', state);
+
+    res.json({
+      success: true,
+      authUrl: authUrl.toString(),
+      state // Client should store this to verify callback
+    });
+  } catch (error) {
+    console.error('Error initiating PayPal OAuth:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to initiate PayPal login'
+    });
+  }
+}
+
+/**
+ * Handle PayPal OAuth Callback
+ * Exchange authorization code for access token and user info
+ */
+async function handlePayPalOAuthCallback(req, res) {
+  try {
+    const { code, state } = req.body;
+    const { identityConfig } = require('../config/paypal');
+
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        error: 'Authorization code is required'
+      });
+    }
+
+    // Exchange authorization code for access token
+    const redirectUri = req.body.redirectUri || `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/paypal/callback`;
+
+    const tokenResponse = await fetch(identityConfig.tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${Buffer.from(`${identityConfig.clientId}:${identityConfig.clientSecret}`).toString('base64')}`
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: redirectUri
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorData = await tokenResponse.text();
+      console.error('Token exchange failed:', errorData);
+      return res.status(400).json({
+        success: false,
+        error: 'Failed to exchange authorization code'
+      });
+    }
+
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    // Get user info from PayPal
+    const userInfoResponse = await fetch(identityConfig.userInfoUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!userInfoResponse.ok) {
+      const errorData = await userInfoResponse.text();
+      console.error('User info fetch failed:', errorData);
+      return res.status(400).json({
+        success: false,
+        error: 'Failed to fetch user information'
+      });
+    }
+
+    const userInfo = await userInfoResponse.json();
+    console.log('PayPal user info received:', userInfo);
+
+    // Extract PayPal user data
+    const paypalPayerId = userInfo.payer_id || userInfo.user_id;
+    const paypalEmail = userInfo.email;
+    const firstName = userInfo.given_name || userInfo.name?.split(' ')[0] || 'User';
+    const lastName = userInfo.family_name || userInfo.name?.split(' ').slice(1).join(' ') || '';
+
+    if (!paypalPayerId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Could not retrieve PayPal account ID. Please ensure your PayPal app has Personal Information enabled.'
+      });
+    }
+
+    // Check if user exists by PayPal payer ID
+    const existingUser = await query(
+      'SELECT id, email, first_name, last_name, account_status FROM users WHERE paypal_payer_id = $1',
+      [paypalPayerId]
+    );
+
+    let user;
+
+    if (existingUser.rows.length > 0) {
+      // User exists - log them in
+      user = existingUser.rows[0];
+
+      // Check account status
+      if (user.account_status !== 'active') {
+        return res.status(403).json({
+          success: false,
+          error: 'Your account has been suspended or banned'
+        });
+      }
+
+      // Update last login
+      await query(
+        'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1',
+        [user.id]
+      );
+
+    } else {
+      // New user - create account
+      const randomPassword = require('crypto').randomBytes(32).toString('hex');
+      const passwordHash = await bcrypt.hash(randomPassword, SALT_ROUNDS);
+
+      const newUserResult = await query(
+        `INSERT INTO users (
+          email, password_hash, first_name, last_name,
+          date_of_birth, paypal_payer_id, paypal_email
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, email, first_name, last_name`,
+        [
+          paypalEmail,
+          passwordHash,
+          firstName,
+          lastName,
+          '1990-01-01', // Placeholder DOB - user should update later
+          paypalPayerId,
+          paypalEmail
+        ]
+      );
+
+      user = newUserResult.rows[0];
+
+      // Assign referral code to new user
+      await assignReferralCode(user.id);
+    }
+
+    // Generate JWT token for our app
+    const token = generateToken(user);
+
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name
+      },
+      token
+    });
+
+  } catch (error) {
+    console.error('Error handling PayPal OAuth callback:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to complete PayPal login'
+    });
+  }
+}
+
 module.exports = {
   register,
   login,
   getProfile,
   createPayPalLoginOrder,
-  verifyPayPalLogin
+  verifyPayPalLogin,
+  initiatePayPalOAuth,
+  handlePayPalOAuthCallback
 };

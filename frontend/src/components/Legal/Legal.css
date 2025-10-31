@@ -1,0 +1,125 @@
+/* Legal Pages Styles */
+
+.legal-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--light-grey) 0%, var(--white) 100%);
+  padding: 80px 20px 40px;
+}
+
+.legal-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 60px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.legal-container h1 {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.last-updated {
+  text-align: center;
+  color: var(--medium-grey);
+  font-size: 14px;
+  margin-bottom: 40px;
+  font-style: italic;
+}
+
+.legal-container section {
+  margin-bottom: 40px;
+}
+
+.legal-container section:last-child {
+  margin-bottom: 0;
+}
+
+.legal-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 16px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.legal-container section:first-of-type h2 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.legal-container h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+.legal-container p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 16px;
+}
+
+.legal-container ul {
+  margin: 16px 0 16px 24px;
+  padding: 0;
+}
+
+.legal-container li {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.legal-container li strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.legal-container a {
+  color: #C8102E;
+  text-decoration: underline;
+}
+
+.legal-container a:hover {
+  color: #a00d25;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .legal-page {
+    padding: 60px 16px 24px;
+  }
+
+  .legal-container {
+    padding: 32px 24px;
+  }
+
+  .legal-container h1 {
+    font-size: 32px;
+  }
+
+  .legal-container h2 {
+    font-size: 24px;
+  }
+
+  .legal-container h3 {
+    font-size: 18px;
+  }
+
+  .legal-container p,
+  .legal-container li {
+    font-size: 15px;
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PickConfirmation from './Payment/PickConfirmation';
 import SignupPayment from './Payment/SignupPayment';
@@ -22,8 +22,35 @@ function LandingPage() {
   const [showSignupPayment, setShowSignupPayment] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState('');
+  const [referralCode, setReferralCode] = useState('');
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+  // Detect referral code from URL parameter on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const refParam = params.get('ref') || params.get('referral');
+
+    if (refParam) {
+      const code = refParam.trim().toUpperCase();
+      setReferralCode(code);
+
+      // Store in localStorage for persistence across navigation
+      localStorage.setItem('referral_code', code);
+
+      console.log('Referral code detected from URL:', code);
+
+      // Optional: Clean URL by removing the parameter
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    } else {
+      // Check if we have a stored referral code
+      const storedCode = localStorage.getItem('referral_code');
+      if (storedCode) {
+        setReferralCode(storedCode);
+      }
+    }
+  }, []);
 
   // Fetch current matchweek
   const fetchCurrentMatchweek = useCallback(async () => {
@@ -159,6 +186,10 @@ function LandingPage() {
     setShowPickConfirmation(false);
     setSelectedTeam(null);
     setSelectedMatch(null);
+
+    // Clear referral code from localStorage after successful use
+    localStorage.removeItem('referral_code');
+    setReferralCode('');
 
     // Log the user in with JWT from payment response
     if (data.token && data.user) {
@@ -379,6 +410,11 @@ function LandingPage() {
       {/* Footer */}
       <footer className="footer">
         <div className="container">
+          <div className="footer-links">
+            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+            <span className="footer-divider">•</span>
+            <Link to="/terms" className="footer-link">Terms of Service</Link>
+          </div>
           <p>&copy; 2025 The Great Escape. All rights reserved.</p>
           <p>Premier League survival pool. 18+ only. Play responsibly.</p>
         </div>
@@ -398,6 +434,7 @@ function LandingPage() {
           selectedTeam={selectedTeam}
           match={selectedMatch}
           poolId={poolStats.id}
+          initialReferralCode={referralCode}
           onSuccess={handlePaymentSuccess}
           onClose={handleClosePickConfirmation}
         />

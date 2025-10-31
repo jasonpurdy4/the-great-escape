@@ -567,7 +567,7 @@ async function createGuestOrder(req, res) {
 // Guest capture order - Auto-creates account from PayPal data
 async function captureGuestOrder(req, res) {
   try {
-    const { orderId } = req.body;
+    const { orderId, referralCode } = req.body;
 
     // Capture the payment
     const request = { id: orderId };
@@ -699,6 +699,18 @@ async function captureGuestOrder(req, res) {
           req.ip || req.connection.remoteAddress
         ]
       );
+
+      // Track referral if code was provided
+      if (referralCode && referralCode.trim()) {
+        try {
+          const { trackReferral } = require('./referralController');
+          await trackReferral(referralCode.trim().toUpperCase(), userId);
+          console.log(`Referral tracked for user ${userId} with code ${referralCode}`);
+        } catch (referralError) {
+          // Don't fail the whole transaction if referral tracking fails
+          console.error('Failed to track referral:', referralError);
+        }
+      }
     }
 
     // Now process the entry (same as authenticated flow)

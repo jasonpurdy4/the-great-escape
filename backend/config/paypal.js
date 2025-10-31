@@ -40,7 +40,36 @@ const client = new paypal.Client({
 
 console.log(`✅ PayPal configured for ${environment} environment`);
 
+// OAuth 2.0 Identity API endpoints
+const identityBaseUrl = environment === 'production'
+  ? 'https://www.paypal.com'
+  : 'https://www.sandbox.paypal.com';
+
+const apiBaseUrl = environment === 'production'
+  ? 'https://api-m.paypal.com'
+  : 'https://api-m.sandbox.paypal.com';
+
+const identityConfig = {
+  // OAuth authorization URL (user redirects here to login)
+  authorizationUrl: `${identityBaseUrl}/connect`,
+
+  // Token exchange endpoint
+  tokenUrl: `${apiBaseUrl}/v1/oauth2/token`,
+
+  // User info endpoint
+  userInfoUrl: `${apiBaseUrl}/v1/oauth2/token/userinfo?schema=openid`,
+
+  // Client credentials for OAuth
+  clientId,
+  clientSecret,
+
+  // Required scopes for basic user info (email, name, PayPal ID)
+  // Note: Must enable "Personal Information" and "Address Information" in PayPal app settings
+  defaultScopes: 'openid profile email https://uri.paypal.com/services/paypalattributes'
+};
+
 module.exports = {
   client,
-  environment
+  environment,
+  identityConfig
 };
