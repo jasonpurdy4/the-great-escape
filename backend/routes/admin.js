@@ -125,4 +125,64 @@ router.get('/db-state', async (req, res) => {
   }
 });
 
+// Populate teams from API (for debugging)
+router.post('/populate-teams', async (req, res) => {
+  try {
+    const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
+
+    console.log('📡 Fetching Premier League teams from API...');
+    const response = await fetch('https://api.football-data.org/v4/competitions/PL/teams', {
+      headers: { 'X-Auth-Token': FOOTBALL_API_TOKEN }
+    });
+
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const teams = data.teams || [];
+
+    console.log(`✅ Found ${teams.length} teams`);
+
+    let inserted = 0;
+    let updated = 0;
+
+    for (const team of teams) {
+      const result = await query(
+        `INSERT INTO teams (id, name, short_name, tla, crest)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (id) DO UPDATE SET
+           name = EXCLUDED.name,
+           short_name = EXCLUDED.short_name,
+           tla = EXCLUDED.tla,
+           crest = EXCLUDED.crest
+         RETURNING (xmax = 0) AS inserted`,
+        [team.id, team.name, team.shortName, team.tla, team.crest]
+      );
+
+      if (result.rows[0].inserted) {
+        inserted++;
+      } else {
+        updated++;
+      }
+    }
+
+    console.log(`✅ Inserted ${inserted} teams, updated ${updated} teams`);
+
+    res.json({
+      success: true,
+      message: 'Teams populated successfully',
+      inserted,
+      updated,
+      total: teams.length
+    });
+  } catch (error) {
+    console.error('Error populating teams:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
