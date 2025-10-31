@@ -213,18 +213,18 @@ function LandingPage({ onNavigate }) {
 
   return (
     <div className="landing-page">
+      {/* Login Button - Fixed position */}
+      <button onClick={() => setShowLogin(true)} className="btn-login-fixed">
+        Login
+      </button>
+
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-background"></div>
         <div className="container">
           <div className="hero-content">
-            <div className="header-bar">
-              <div className="logo">
-                <div className="logo-text">THE GREAT ESCAPE</div>
-              </div>
-              <button onClick={() => setShowLogin(true)} className="btn-login">
-                Login
-              </button>
+            <div className="logo">
+              <div className="logo-text">THE GREAT ESCAPE</div>
             </div>
             <h1 className="hero-title">
               Pick your team.<br />
