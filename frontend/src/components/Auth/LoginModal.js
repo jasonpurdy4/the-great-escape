@@ -110,84 +110,39 @@ function LoginModal({ onClose, onLogin }) {
             <div className="error-message general-error">{error}</div>
           )}
 
-          {!showPayPalLogin ? (
-            <>
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    autoComplete="email"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                  />
-                </div>
-
-                <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
-                  {loading ? 'Logging in...' : 'Login'}
-                </button>
-              </form>
-
-              <div className="divider">
-                <span>OR</span>
-              </div>
-
-              <button
-                onClick={() => setShowPayPalLogin(true)}
-                className="btn btn-paypal btn-large"
-                disabled={loading}
-              >
-                <span className="paypal-icon">💳</span>
-                Continue with PayPal
-              </button>
-            </>
-          ) : (
-            <div className="paypal-login-section">
-              <p className="paypal-instruction">
-                Click the PayPal button below to login securely with your PayPal account
-              </p>
-
-              <div className="paypal-buttons-container">
-                {loading ? (
-                  <div className="loading">Connecting to PayPal...</div>
-                ) : (
-                  <PayPalButtons
-                    createOrder={createPayPalLoginOrder}
-                    onApprove={onPayPalApprove}
-                    onError={onPayPalError}
-                    style={{
-                      layout: 'vertical',
-                      color: 'blue',
-                      shape: 'rect',
-                      label: 'pay'
-                    }}
-                  />
-                )}
-              </div>
-
-              <button
-                onClick={() => setShowPayPalLogin(false)}
-                className="btn btn-secondary"
-                disabled={loading}
-              >
-                ← Back to Email Login
-              </button>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="your@email.com"
+                autoComplete="email"
+              />
             </div>
-          )}
+
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
+          </form>
+
+          <p className="login-note">
+            Don't have login credentials? Just make a pick to create your account!
+          </p>
         </div>
       </div>
     </div>
