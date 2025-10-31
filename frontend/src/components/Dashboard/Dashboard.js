@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import BalanceCard from './BalanceCard';
 import MyPicks from './MyPicks';
 import FutureMatchweeks from './FutureMatchweeks';
+import UpcomingMatches from './UpcomingMatches';
 import Referral from './Referral';
 import ReferralModal from '../ReferralModal';
 import './Dashboard.css';
@@ -135,6 +136,11 @@ function Dashboard() {
             totalFunds={totalFunds}
             onRefresh={fetchUserData}
           />
+        </div>
+
+        {/* Upcoming Matches Alert */}
+        <div className="dashboard-section">
+          <UpcomingMatches entries={entries} token={token} />
         </div>
 
         {/* My Active Picks */}
