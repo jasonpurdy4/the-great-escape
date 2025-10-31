@@ -308,8 +308,144 @@ async function getProfile(req, res) {
   }
 }
 
+// PayPal Login - Create verification order
+async function createPayPalLoginOrder(req, res) {
+  try {
+    const { client: paypalClient } = require('../config/paypal');
+    const { OrdersController } = require('@paypal/paypal-server-sdk');
+    const ordersController = new OrdersController(paypalClient);
+
+    // Create a minimal order just to verify PayPal identity
+    const request = {
+      body: {
+        intent: 'CAPTURE',
+        purchaseUnits: [
+          {
+            amount: {
+              currencyCode: 'USD',
+              value: '0.01' // Minimal amount for verification
+            },
+            description: 'The Great Escape - Login Verification'
+          }
+        ],
+        applicationContext: {
+          brandName: 'The Great Escape',
+          landingPage: 'LOGIN',
+          userAction: 'PAY_NOW',
+          returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/`,
+          cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/`
+        }
+      }
+    };
+
+    const response = await ordersController.ordersCreate(request);
+    const orderId = response.result.id;
+
+    res.json({
+      success: true,
+      orderId: orderId
+    });
+  } catch (error) {
+    console.error('Create PayPal login order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create PayPal login order'
+    });
+  }
+}
+
+// PayPal Login - Verify and login user
+async function verifyPayPalLogin(req, res) {
+  try {
+    const { orderId } = req.body;
+    const { client: paypalClient } = require('../config/paypal');
+    const { OrdersController } = require('@paypal/paypal-server-sdk');
+    const ordersController = new OrdersController(paypalClient);
+
+    // Capture the order to get PayPal user info
+    const captureRequest = {
+      id: orderId,
+      prefer: 'return=representation'
+    };
+
+    const captureResponse = await ordersController.ordersCapture(captureRequest);
+    const capturedOrder = captureResponse.result;
+
+    if (capturedOrder.status !== 'COMPLETED') {
+      return res.status(400).json({
+        success: false,
+        error: 'PayPal verification was not completed'
+      });
+    }
+
+    // Extract PayPal payer ID
+    const paypalPayerId = capturedOrder.payer?.payerId || capturedOrder.payer?.payer_id;
+    const payerEmail = capturedOrder.payer?.emailAddress || capturedOrder.payer?.email_address;
+
+    if (!paypalPayerId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Could not verify PayPal account'
+      });
+    }
+
+    // Find user by PayPal ID
+    const userResult = await query(
+      `SELECT id, email, first_name, last_name, date_of_birth, balance_cents, credit_cents, referral_code
+       FROM users WHERE paypal_payer_id = $1`,
+      [paypalPayerId]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'No account found with this PayPal account. Please sign up first by making a pick!'
+      });
+    }
+
+    const user = userResult.rows[0];
+
+    // Refund the verification payment
+    // (In production, you might want to add this to their balance instead)
+    await query(
+      'UPDATE users SET balance_cents = balance_cents + 1 WHERE id = $1',
+      [user.id]
+    );
+
+    // Generate JWT token
+    const token = generateToken({
+      userId: user.id,
+      email: user.email
+    });
+
+    // Return user data and token
+    res.json({
+      success: true,
+      token: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        dateOfBirth: user.date_of_birth,
+        balance: user.balance_cents,
+        credits: user.credit_cents,
+        referralCode: user.referral_code
+      }
+    });
+  } catch (error) {
+    console.error('Verify PayPal login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to verify PayPal login'
+    });
+  }
+}
+
 module.exports = {
   register,
   login,
-  getProfile
+  getProfile,
+  createPayPalLoginOrder,
+  verifyPayPalLogin
 };

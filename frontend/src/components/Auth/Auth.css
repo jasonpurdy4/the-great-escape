@@ -115,6 +115,69 @@
   color: #C8102E;
 }
 
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+  color: var(--medium-grey);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.divider span {
+  padding: 0 16px;
+}
+
+/* PayPal Login Button */
+.btn-paypal {
+  background: #0070ba;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-paypal:hover {
+  background: #005ea6;
+  transform: translateY(-2px);
+}
+
+.paypal-icon {
+  font-size: 20px;
+}
+
+/* PayPal Login Section */
+.paypal-login-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.paypal-instruction {
+  text-align: center;
+  color: var(--medium-grey);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.paypal-buttons-container {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .register-form,
