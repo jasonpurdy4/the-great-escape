@@ -1,7 +1,12 @@
 // PayPal Configuration
 const paypal = require('@paypal/paypal-server-sdk');
 
-const environment = process.env.PAYMENT_ENVIRONMENT || 'sandbox';
+// Support both PAYMENT_ENVIRONMENT and PAYPAL_MODE for backward compatibility
+// PAYMENT_ENVIRONMENT takes precedence
+const rawEnvironment = process.env.PAYMENT_ENVIRONMENT || process.env.PAYPAL_MODE || 'sandbox';
+
+// Normalize to 'production' or 'sandbox' (support 'live' as alias for 'production')
+const environment = (rawEnvironment === 'live' || rawEnvironment === 'production') ? 'production' : 'sandbox';
 
 // Get credentials based on environment
 const clientId = environment === 'production'
