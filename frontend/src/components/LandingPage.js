@@ -275,7 +275,7 @@ function LandingPage() {
       ) : matches.length > 0 ? (
         <section className="team-selection-section section">
           <div className="container">
-            <h2 className="section-title">Matchday {currentMatchweek?.matchweek} Fixtures</h2>
+            <h2 className="section-title">Pick your Team for Matchday {currentMatchweek?.matchweek}</h2>
             <div className="matches-grid">
               {matches.map((match) => {
                 const times = formatDate(match.utcDate);

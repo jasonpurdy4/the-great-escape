@@ -358,6 +358,7 @@
   font-size: 24px;
   font-weight: 800;
   text-align: center;
+  width: 100%;
 }
 
 .step p {
@@ -366,6 +367,7 @@
   line-height: 1.6;
   text-align: center;
   margin: 0;
+  width: 100%;
 }
 
 /* Features Section */

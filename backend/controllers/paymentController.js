@@ -890,7 +890,7 @@ async function createAddFundsOrder(req, res) {
       }
     };
 
-    const response = await ordersController.ordersCreate(request);
+    const response = await ordersController.create(request);
     const orderId = response.result.id;
 
     res.json({
@@ -919,7 +919,7 @@ async function captureAddFundsOrder(req, res) {
       prefer: 'return=representation'
     };
 
-    const captureResponse = await ordersController.ordersCapture(captureRequest);
+    const captureResponse = await ordersController.capture(captureRequest);
     const captureData = captureResponse.result;
 
     if (captureData.status !== 'COMPLETED') {
