@@ -131,3 +131,124 @@
     margin: 40px 0;
   }
 }
+
+/* Upcoming Matches Alert */
+.upcoming-matches-alert {
+  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 4px 16px rgba(200, 16, 46, 0.3);
+}
+
+.upcoming-matches-alert .alert-header {
+  margin-bottom: 20px;
+}
+
+.upcoming-matches-alert h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+}
+
+.upcoming-matches-alert .deadline {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.upcoming-matches-alert .alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.upcoming-matches-alert .active-entries-count {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.upcoming-matches-alert .matches-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.upcoming-matches-alert .match-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.upcoming-matches-alert .match-preview .team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.upcoming-matches-alert .match-preview .team img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.upcoming-matches-alert .match-preview .team span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.upcoming-matches-alert .match-preview .vs {
+  font-size: 12px;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.upcoming-matches-alert .more-matches {
+  margin: 8px 0 0;
+  font-size: 13px;
+  opacity: 0.8;
+  text-align: center;
+}
+
+.upcoming-matches-alert .make-picks-btn {
+  background: white;
+  color: #C8102E;
+  font-weight: 700;
+  border: none;
+  padding: 14px 24px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.upcoming-matches-alert .make-picks-btn:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .upcoming-matches-alert {
+    padding: 20px;
+  }
+
+  .upcoming-matches-alert h3 {
+    font-size: 18px;
+  }
+
+  .upcoming-matches-alert .match-preview .team span {
+    font-size: 13px;
+  }
+
+  .upcoming-matches-alert .match-preview .team img {
+    width: 20px;
+    height: 20px;
+  }
+}
