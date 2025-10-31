@@ -103,6 +103,13 @@ function PoolDetails() {
         if (picksData.success) {
           setPicks(picksData.data);
         }
+
+        // Fetch matches for this gameweek (for editing picks)
+        const matchesResponse = await fetch(`${API_URL}/api/matches?matchday=${poolData.matchweek}`);
+        const matchesData = await matchesResponse.json();
+        if (matchesData.matches) {
+          setMatches(matchesData.matches);
+        }
       }
 
       setLoading(false);
@@ -126,6 +133,64 @@ function PoolDetails() {
       winner: { text: '👑 Winner', className: 'badge-winner', icon: '👑' }
     };
     return badges[status] || badges.active;
+  };
+
+  const handleEditPick = () => {
+    setShowEditPick(true);
+  };
+
+  const handleSelectTeam = async (team, match) => {
+    if (!myLatestPick) return;
+
+    if (!window.confirm(`Change your pick to ${team.name}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/picks/${myLatestPick.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          teamId: team.id,
+          teamName: team.name,
+          teamCrest: team.crest,
+          matchId: match.id
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Pick updated to ${team.name}!`);
+        setShowEditPick(false);
+        fetchPoolDetails(); // Refresh data
+      } else {
+        alert(data.error || 'Failed to update pick');
+      }
+    } catch (error) {
+      console.error('Error updating pick:', error);
+      alert('Failed to update pick. Please try again.');
+    }
+  };
+
+  const isTeamUsed = (teamId) => {
+    // Check if team was used in any previous picks for this entry
+    return picks.some(pick => pick.team_id === teamId && pick.id !== myLatestPick?.id);
+  };
+
+  const formatMatchDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'America/New_York'
+    });
   };
 
   if (loading) {
@@ -241,11 +306,23 @@ function PoolDetails() {
         {/* Your Latest Pick */}
         {myLatestPick && (
           <div className="your-pick-section">
-            <h2>Your Latest Pick</h2>
+            <div className="section-header">
+              <h2>Your Latest Pick</h2>
+              {canEdit && myLatestPick.result === 'pending' && (
+                <button onClick={handleEditPick} className="btn btn-secondary">
+                  Edit Pick
+                </button>
+              )}
+            </div>
             <div className="your-pick-card">
               <div className="pick-team">
-                <div className="team-name">{myLatestPick.team_name}</div>
-                <div className="pick-meta">Week {myLatestPick.gameweek}</div>
+                {myLatestPick.team_crest && (
+                  <img src={myLatestPick.team_crest} alt={myLatestPick.team_name} className="pick-team-crest" />
+                )}
+                <div className="pick-team-info">
+                  <div className="team-name">{myLatestPick.team_name}</div>
+                  <div className="pick-meta">Week {myLatestPick.gameweek}</div>
+                </div>
               </div>
               <div className={`pick-result result-${myLatestPick.result}`}>
                 {myLatestPick.result === 'pending' && '⏱ Pending'}
@@ -254,6 +331,16 @@ function PoolDetails() {
                 {myLatestPick.result === 'draw' && '− Draw'}
               </div>
             </div>
+            {canEdit && (
+              <div className="edit-notice">
+                ⏰ You can edit your pick until {timeUntilDeadline}
+              </div>
+            )}
+            {!canEdit && myLatestPick.result === 'pending' && (
+              <div className="deadline-notice">
+                🔒 Pick is locked - deadline has passed
+              </div>
+            )}
           </div>
         )}
 
@@ -318,6 +405,73 @@ function PoolDetails() {
           </div>
         )}
       </div>
+
+      {/* Edit Pick Modal */}
+      {showEditPick && (
+        <div className="modal-overlay" onClick={() => setShowEditPick(false)}>
+          <div className="modal-content edit-pick-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowEditPick(false)}>×</button>
+            <h2>Edit Your Pick</h2>
+            <p className="modal-subtitle">Select a new team for Week {pool.matchweek}</p>
+
+            <div className="matches-grid">
+              {matches.map((match) => (
+                <div key={match.id} className="match-card">
+                  <div className="match-date">
+                    {formatMatchDate(match.utcDate)}
+                  </div>
+
+                  {/* Home Team */}
+                  <div
+                    className={`team-option ${isTeamUsed(match.homeTeam.id) ? 'used' : ''} ${myLatestPick?.team_id === match.homeTeam.id ? 'current' : ''}`}
+                    onClick={() => !isTeamUsed(match.homeTeam.id) && handleSelectTeam(match.homeTeam, match)}
+                  >
+                    <img
+                      src={match.homeTeam.crest}
+                      alt={match.homeTeam.name}
+                      className="team-crest"
+                    />
+                    <div className="team-info">
+                      <div className="team-name">{match.homeTeam.name}</div>
+                      <div className="team-label">HOME</div>
+                    </div>
+                    {isTeamUsed(match.homeTeam.id) && (
+                      <span className="used-badge">Used</span>
+                    )}
+                    {myLatestPick?.team_id === match.homeTeam.id && (
+                      <span className="current-badge">Current</span>
+                    )}
+                  </div>
+
+                  <div className="vs">vs</div>
+
+                  {/* Away Team */}
+                  <div
+                    className={`team-option ${isTeamUsed(match.awayTeam.id) ? 'used' : ''} ${myLatestPick?.team_id === match.awayTeam.id ? 'current' : ''}`}
+                    onClick={() => !isTeamUsed(match.awayTeam.id) && handleSelectTeam(match.awayTeam, match)}
+                  >
+                    <img
+                      src={match.awayTeam.crest}
+                      alt={match.awayTeam.name}
+                      className="team-crest"
+                    />
+                    <div className="team-info">
+                      <div className="team-name">{match.awayTeam.name}</div>
+                      <div className="team-label">AWAY</div>
+                    </div>
+                    {isTeamUsed(match.awayTeam.id) && (
+                      <span className="used-badge">Used</span>
+                    )}
+                    {myLatestPick?.team_id === match.awayTeam.id && (
+                      <span className="current-badge">Current</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
