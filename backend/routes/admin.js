@@ -194,4 +194,55 @@ router.post('/populate-teams', async (req, res) => {
   }
 });
 
+// Fix existing picks to add team crests (for debugging)
+router.post('/fix-pick-crests', async (req, res) => {
+  try {
+    const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
+
+    console.log('📡 Fetching teams from API...');
+    const response = await fetch('https://api.football-data.org/v4/competitions/PL/teams', {
+      headers: { 'X-Auth-Token': FOOTBALL_API_TOKEN }
+    });
+
+    const data = await response.json();
+    const teams = data.teams || [];
+
+    // Get all picks with missing crests
+    const picksResult = await query(
+      'SELECT id, team_id, team_name FROM picks WHERE team_crest IS NULL OR team_crest = \'\''
+    );
+
+    let fixed = 0;
+
+    for (const pick of picksResult.rows) {
+      // Find matching team by ID
+      const team = teams.find(t => t.id === pick.team_id);
+
+      if (team) {
+        await query(
+          'UPDATE picks SET team_crest = $1 WHERE id = $2',
+          [team.crest, pick.id]
+        );
+        console.log(`✅ Updated pick ${pick.id}: ${pick.team_name} -> ${team.crest}`);
+        fixed++;
+      } else {
+        console.log(`⚠️  No team found for pick ${pick.id}: ${pick.team_name} (ID: ${pick.team_id})`);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Fixed pick crests',
+      fixed,
+      total: picksResult.rows.length
+    });
+  } catch (error) {
+    console.error('Error fixing pick crests:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
