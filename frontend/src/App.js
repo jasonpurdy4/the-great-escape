@@ -7,6 +7,7 @@ import TeamSelection from './components/TeamSelection';
 import Dashboard from './components/Dashboard/Dashboard';
 import PoolDetails from './components/PoolDetails/PoolDetails';
 import PayPalCallback from './components/Auth/PayPalCallback';
+import MagicLinkVerify from './components/Auth/MagicLinkVerify';
 import PrivacyPolicy from './components/Legal/PrivacyPolicy';
 import TermsOfService from './components/Legal/TermsOfService';
 import './App.css';
@@ -45,6 +46,7 @@ function AppContent() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/team-selection" element={<TeamSelection />} />
         <Route path="/auth/paypal/callback" element={<PayPalCallback />} />
+        <Route path="/auth/magic-link/:token" element={<MagicLinkVerify />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route

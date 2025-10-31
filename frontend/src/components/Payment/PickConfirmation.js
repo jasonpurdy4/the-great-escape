@@ -15,6 +15,18 @@ function PickConfirmation({
   const [error, setError] = useState(null);
   const [referralCode, setReferralCode] = useState(initialReferralCode);
 
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
+
   useEffect(() => {
     if (!selectedTeam || !match) return;
     console.log('PickConfirmation mounted');

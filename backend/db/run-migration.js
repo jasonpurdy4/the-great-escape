@@ -7,7 +7,7 @@ const { pool } = require('./connection');
 async function runMigration(filename) {
   try {
     console.log(`🚀 Running migration: ${filename}...`);
-    const migrationPath = path.join(__dirname, 'migrations', filename);
+    const migrationPath = path.join(__dirname, '..', 'migrations', filename);
     const sql = fs.readFileSync(migrationPath, 'utf8');
 
     await pool.query(sql);
