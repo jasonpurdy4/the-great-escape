@@ -37,16 +37,6 @@
 .referral-icon {
   font-size: 80px;
   margin-bottom: 16px;
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
 }
 
 .referral-title {
@@ -59,7 +49,7 @@
 }
 
 .referral-subtitle {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
