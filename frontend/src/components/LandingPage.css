@@ -31,7 +31,7 @@
   right: 0;
   bottom: 0;
   z-index: 0;
-  opacity: 0.08;
+  opacity: 0.15;
   background-color: var(--premier-league-purple);
   background-image:
     /* White cross (vertical) */
@@ -255,6 +255,42 @@
   box-shadow: 0 8px 24px rgba(200, 16, 46, 0.2);
 }
 
+/* Team Selection Section */
+.team-selection-section {
+  position: relative;
+  background: var(--white);
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.team-selection-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.05;
+  background-color: var(--premier-league-purple);
+  background-image:
+    linear-gradient(90deg, transparent 40%, white 40%, white 60%, transparent 60%),
+    linear-gradient(0deg, transparent 40%, white 40%, white 60%, transparent 60%),
+    linear-gradient(90deg, transparent 45%, var(--union-jack-red) 45%, var(--union-jack-red) 55%, transparent 55%),
+    linear-gradient(0deg, transparent 45%, var(--union-jack-red) 45%, var(--union-jack-red) 55%, transparent 55%),
+    linear-gradient(45deg, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%);
+  background-size: 800px 800px;
+  background-position: center;
+  pointer-events: none;
+}
+
+.team-selection-section .section-title,
+.team-selection-section .container,
+.team-selection-section .matches-grid {
+  position: relative;
+  z-index: 1;
+}
+
 /* Team Crests Scrolling Section */
 .teams-showcase {
   background: var(--white);
@@ -311,25 +347,52 @@
 
 /* How It Works Section */
 .how-it-works {
+  position: relative;
   background: linear-gradient(180deg, var(--light-grey) 0%, var(--white) 100%);
   padding: 80px 0;
+  overflow: hidden;
+}
+
+.how-it-works::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.06;
+  background-color: var(--premier-league-purple);
+  background-image:
+    linear-gradient(90deg, transparent 40%, white 40%, white 60%, transparent 60%),
+    linear-gradient(0deg, transparent 40%, white 40%, white 60%, transparent 60%),
+    linear-gradient(90deg, transparent 45%, var(--union-jack-red) 45%, var(--union-jack-red) 55%, transparent 55%),
+    linear-gradient(0deg, transparent 45%, var(--union-jack-red) 45%, var(--union-jack-red) 55%, transparent 55%),
+    linear-gradient(45deg, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, var(--union-jack-red) 48%, var(--union-jack-red) 52%, transparent 52%);
+  background-size: 600px 600px;
+  background-position: center;
+  pointer-events: none;
 }
 
 .how-it-works h2 {
+  position: relative;
   text-align: center;
   margin-bottom: 60px;
   font-size: 48px;
   font-weight: 800;
   color: var(--navy);
+  z-index: 1;
 }
 
 .steps {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  z-index: 1;
 }
 
 .step {
