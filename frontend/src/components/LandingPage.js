@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import PickConfirmation from './Payment/PickConfirmation';
 import SignupPayment from './Payment/SignupPayment';
+import LoginModal from './Auth/LoginModal';
 import './LandingPage.css';
 import './TeamSelection.css'; // Import team selection styles for embedded fixtures
 
@@ -17,6 +18,7 @@ function LandingPage({ onNavigate }) {
   const [usedTeams] = useState([]); // TODO: Fetch from API when user is logged in
   const [showPickConfirmation, setShowPickConfirmation] = useState(false);
   const [showSignupPayment, setShowSignupPayment] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState('');
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -187,6 +189,28 @@ function LandingPage({ onNavigate }) {
     return { uk: ukTime, est: estTime };
   };
 
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        login(data.user, data.token);
+        setShowLogin(false);
+        onNavigate('dashboard');
+      } else {
+        alert(data.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed. Please try again.');
+    }
+  };
+
   return (
     <div className="landing-page">
       {/* Hero Section */}
@@ -194,8 +218,13 @@ function LandingPage({ onNavigate }) {
         <div className="hero-background"></div>
         <div className="container">
           <div className="hero-content">
-            <div className="logo">
-              <div className="logo-text">THE GREAT ESCAPE</div>
+            <div className="header-bar">
+              <div className="logo">
+                <div className="logo-text">THE GREAT ESCAPE</div>
+              </div>
+              <button onClick={() => setShowLogin(true)} className="btn-login">
+                Login
+              </button>
             </div>
             <h1 className="hero-title">
               Pick your team.<br />
@@ -331,18 +360,24 @@ function LandingPage({ onNavigate }) {
           <div className="steps">
             <div className="step">
               <div className="step-number">1</div>
-              <h4>Pick a Team Each Week</h4>
-              <p>Choose one winning team per matchday. Can't reuse teams. Draw or loss = you're out.</p>
+              <div className="step-content">
+                <h4>Pick a Team Each Week</h4>
+                <p>Choose one winning team per matchday. Can't reuse teams. Draw or loss = you're out.</p>
+              </div>
             </div>
             <div className="step">
               <div className="step-number">2</div>
-              <h4>Survive or Die</h4>
-              <p>Win = Continue to next week. Draw or Loss = Eliminated. Simple as that.</p>
+              <div className="step-content">
+                <h4>Survive or Die</h4>
+                <p>Win = Continue to next week. Draw or Loss = Eliminated. Simple as that.</p>
+              </div>
             </div>
             <div className="step">
               <div className="step-number">3</div>
-              <h4>Win the Pot</h4>
-              <p>Last survivor(s) standing split the entire pot. Winner takes all.</p>
+              <div className="step-content">
+                <h4>Win the Pot</h4>
+                <p>Last survivor(s) standing split the entire pot. Winner takes all.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -372,6 +407,13 @@ function LandingPage({ onNavigate }) {
           poolId={poolStats.id}
           onSuccess={handlePaymentSuccess}
           onClose={handleClosePickConfirmation}
+        />
+      )}
+
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          onLogin={handleLogin}
         />
       )}
     </div>

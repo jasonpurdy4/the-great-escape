@@ -15,12 +15,52 @@ function PoolDetails() {
   const [pickDistribution, setPickDistribution] = useState({});
   const [picks, setPicks] = useState([]);
   const [poolEntries, setPoolEntries] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [showEditPick, setShowEditPick] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
+  const [timeUntilDeadline, setTimeUntilDeadline] = useState('');
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     fetchPoolDetails();
   }, [entryId]);
+
+  // Check if editing is allowed (deadline countdown)
+  useEffect(() => {
+    if (!pool) return;
+
+    const updateDeadline = () => {
+      const now = new Date();
+      const deadline = new Date(pool.deadline);
+      const diff = deadline - now;
+
+      if (diff <= 0) {
+        setCanEdit(false);
+        setTimeUntilDeadline('Deadline passed');
+        return;
+      }
+
+      // Can edit if more than 1 hour until deadline
+      setCanEdit(diff > 60 * 60 * 1000);
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      if (hours > 24) {
+        const days = Math.floor(hours / 24);
+        setTimeUntilDeadline(`${days}d ${hours % 24}h until deadline`);
+      } else if (hours > 0) {
+        setTimeUntilDeadline(`${hours}h ${minutes}m until deadline`);
+      } else {
+        setTimeUntilDeadline(`${minutes}m until deadline`);
+      }
+    };
+
+    updateDeadline();
+    const interval = setInterval(updateDeadline, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, [pool]);
 
   const fetchPoolDetails = async () => {
     if (!token) {
