@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LandingPage from './components/LandingPage';
 import TeamSelection from './components/TeamSelection';
 import Dashboard from './components/Dashboard/Dashboard';
 import PoolDetails from './components/PoolDetails/PoolDetails';
 import './App.css';
+
+const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID || 'AaFxRm6jWaCu0azzB9dHFAM1hFFwFEwxl-j_FuECE7s5kKh0UrGiFuTJuLHIOY-xWADbWh0I3HbhZB-5';
 
 // Protected route wrapper
 function ProtectedRoute({ children }) {
@@ -61,11 +64,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <PayPalScriptProvider options={{ 'client-id': PAYPAL_CLIENT_ID, currency: 'USD' }}>
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
+    </PayPalScriptProvider>
   );
 }
 
