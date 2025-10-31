@@ -102,6 +102,13 @@ router.get('/db-state', async (req, res) => {
     const teamData = await query('SELECT id, name, short_name FROM teams LIMIT 5');
     results.sampleTeams = teamData.rows;
 
+    // Get existing entries and picks data
+    const entriesData = await query('SELECT * FROM entries');
+    results.sampleEntries = entriesData.rows;
+
+    const picksData = await query('SELECT * FROM picks');
+    results.samplePicks = picksData.rows;
+
     res.json({
       success: true,
       counts: {
@@ -113,7 +120,9 @@ router.get('/db-state', async (req, res) => {
       },
       samples: {
         pools: results.samplePools,
-        teams: results.sampleTeams
+        teams: results.sampleTeams,
+        entries: results.sampleEntries,
+        picks: results.samplePicks
       }
     });
   } catch (error) {
