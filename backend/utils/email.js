@@ -21,8 +21,11 @@ async function sendMagicLinkEmail(email, magicLink) {
   // If Resend is configured, send actual email
   if (resend) {
     try {
+      // Use Resend's onboarding domain for testing, or verified domain in production
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'The Great Escape <onboarding@resend.dev>';
+
       const { data, error } = await resend.emails.send({
-        from: 'The Great Escape <noreply@thegreatescape.app>',
+        from: fromEmail,
         to: [email],
         subject: '🔐 Login to The Great Escape',
         html: `
