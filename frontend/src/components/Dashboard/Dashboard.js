@@ -133,6 +133,7 @@ function Dashboard() {
             balance={balance}
             credits={credits}
             totalFunds={totalFunds}
+            onRefresh={fetchUserData}
           />
         </div>
 

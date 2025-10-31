@@ -1,0 +1,176 @@
+/* Add Funds Modal Styles */
+
+.add-funds-modal {
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.modal-header h2 {
+  color: var(--navy);
+  margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.modal-subtitle {
+  color: var(--medium-grey);
+  font-size: 15px;
+}
+
+/* Amount Selection */
+.amount-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.amount-selection label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.amount-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.amount-btn {
+  padding: 20px;
+  border: 2px solid var(--light-grey);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.amount-btn:hover {
+  border-color: var(--union-jack-red);
+  background: rgba(200, 16, 46, 0.05);
+}
+
+.amount-btn.selected {
+  border-color: var(--union-jack-red);
+  background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(200, 16, 46, 0.05) 100%);
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.2);
+}
+
+/* Custom Amount */
+.custom-amount {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.amount-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  pointer-events: none;
+}
+
+.amount-input {
+  width: 100%;
+  padding: 20px 20px 20px 48px;
+  border: 2px solid var(--light-grey);
+  border-radius: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.amount-input:focus {
+  outline: none;
+  border-color: var(--union-jack-red);
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.15);
+}
+
+.amount-input::placeholder {
+  color: var(--light-grey);
+}
+
+.amount-limits {
+  font-size: 13px;
+  color: var(--medium-grey);
+  text-align: center;
+}
+
+/* PayPal Section */
+.paypal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.payment-summary {
+  background: var(--light-grey);
+  border-radius: 12px;
+  padding: 20px;
+  border-left: 4px solid var(--union-jack-red);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.summary-row strong {
+  color: var(--union-jack-red);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.summary-note {
+  font-size: 13px;
+  color: var(--medium-grey);
+  font-style: italic;
+}
+
+.paypal-buttons-container {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .add-funds-modal {
+    max-width: 100%;
+    padding: 24px;
+  }
+
+  .amount-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-header h2 {
+    font-size: 24px;
+  }
+}

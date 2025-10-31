@@ -1,15 +1,24 @@
 // BalanceCard - Shows user's balance, credits, and total funds
-import React from 'react';
+import React, { useState } from 'react';
+import AddFundsModal from './AddFundsModal';
 import './BalanceCard.css';
 
-function BalanceCard({ balance, credits, totalFunds }) {
+function BalanceCard({ balance, credits, totalFunds, onRefresh }) {
+  const [showAddFunds, setShowAddFunds] = useState(false);
+
   const formatCurrency = (cents) => {
     return (cents / 100).toFixed(2);
   };
 
   const handleAddFunds = () => {
-    // TODO: Show add funds modal
-    console.log('Add funds clicked - modal not implemented yet');
+    setShowAddFunds(true);
+  };
+
+  const handleAddFundsSuccess = () => {
+    setShowAddFunds(false);
+    if (onRefresh) {
+      onRefresh();
+    }
   };
 
   return (
@@ -60,6 +69,14 @@ function BalanceCard({ balance, credits, totalFunds }) {
           <strong>Credits:</strong> Referral bonuses. Can only be used for entry fees.
         </div>
       </div>
+
+      {/* Add Funds Modal */}
+      {showAddFunds && (
+        <AddFundsModal
+          onClose={() => setShowAddFunds(false)}
+          onSuccess={handleAddFundsSuccess}
+        />
+      )}
     </div>
   );
 }

@@ -852,10 +852,126 @@ async function captureGuestOrder(req, res) {
   }
 }
 
+// Create PayPal order for adding funds to balance
+async function createAddFundsOrder(req, res) {
+  try {
+    const { amount } = req.body;
+    const userId = req.user.id;
+
+    // Validate amount
+    const amountValue = parseFloat(amount);
+    if (isNaN(amountValue) || amountValue < 5 || amountValue > 1000) {
+      return res.status(400).json({
+        success: false,
+        error: 'Amount must be between $5.00 and $1000.00'
+      });
+    }
+
+    // Create PayPal order
+    const request = {
+      body: {
+        intent: 'CAPTURE',
+        purchaseUnits: [
+          {
+            amount: {
+              currencyCode: 'USD',
+              value: amountValue.toFixed(2)
+            },
+            description: `Add $${amountValue.toFixed(2)} to The Great Escape balance`
+          }
+        ],
+        applicationContext: {
+          brandName: 'The Great Escape',
+          landingPage: 'NO_PREFERENCE',
+          userAction: 'PAY_NOW',
+          returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard`,
+          cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard`
+        }
+      }
+    };
+
+    const response = await ordersController.ordersCreate(request);
+    const orderId = response.result.id;
+
+    res.json({
+      success: true,
+      orderId: orderId,
+      amount: amountValue
+    });
+  } catch (error) {
+    console.error('Create add funds order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create payment order'
+    });
+  }
+}
+
+// Capture add funds PayPal order and update user balance
+async function captureAddFundsOrder(req, res) {
+  try {
+    const { orderId } = req.body;
+    const userId = req.user.id;
+
+    // Capture the order
+    const captureRequest = {
+      id: orderId,
+      prefer: 'return=representation'
+    };
+
+    const captureResponse = await ordersController.ordersCapture(captureRequest);
+    const captureData = captureResponse.result;
+
+    if (captureData.status !== 'COMPLETED') {
+      return res.status(400).json({
+        success: false,
+        error: 'Payment was not completed'
+      });
+    }
+
+    // Get the payment amount
+    const amountValue = parseFloat(captureData.purchaseUnits[0].amount.value);
+    const amountCents = Math.round(amountValue * 100);
+
+    // Update user balance
+    await query(
+      'UPDATE users SET balance_cents = balance_cents + $1 WHERE id = $2',
+      [amountCents, userId]
+    );
+
+    // Get updated balance
+    const userResult = await query(
+      'SELECT balance_cents, credit_cents FROM users WHERE id = $1',
+      [userId]
+    );
+
+    const updatedUser = userResult.rows[0];
+
+    res.json({
+      success: true,
+      data: {
+        amountAdded: amountValue,
+        newBalance: updatedUser.balance_cents,
+        newCredits: updatedUser.credit_cents,
+        paypalOrderId: orderId,
+        paypalCaptureId: captureData.id
+      }
+    });
+  } catch (error) {
+    console.error('Capture add funds order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to process payment'
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   captureOrder,
   purchaseWithBalance,
   createGuestOrder,
-  captureGuestOrder
+  captureGuestOrder,
+  createAddFundsOrder,
+  captureAddFundsOrder
 };
