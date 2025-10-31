@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PickConfirmation from './Payment/PickConfirmation';
 import SignupPayment from './Payment/SignupPayment';
@@ -6,7 +7,8 @@ import LoginModal from './Auth/LoginModal';
 import './LandingPage.css';
 import './TeamSelection.css'; // Import team selection styles for embedded fixtures
 
-function LandingPage({ onNavigate }) {
+function LandingPage() {
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [teams, setTeams] = useState([]);
   const [matches, setMatches] = useState([]);
@@ -161,8 +163,8 @@ function LandingPage({ onNavigate }) {
     // Log the user in with JWT from payment response
     if (data.token && data.user) {
       login(data.user, data.token);
-      // Navigate to dashboard (AuthContext will auto-redirect)
-      onNavigate('dashboard');
+      // Navigate to dashboard
+      navigate('/dashboard');
     } else {
       // Fallback if no token (shouldn't happen)
       alert(`Pick confirmed! Welcome to The Great Escape!\n\nEntry #${data.entryNumber} created.\n\nCheck your email for login details.`);
@@ -201,7 +203,7 @@ function LandingPage({ onNavigate }) {
       if (data.success) {
         login(data.user, data.token);
         setShowLogin(false);
-        onNavigate('dashboard');
+        navigate('/dashboard');
       } else {
         alert(data.error || 'Login failed');
       }
