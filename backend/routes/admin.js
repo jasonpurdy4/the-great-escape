@@ -69,4 +69,60 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// Check database state (for debugging)
+router.get('/db-state', async (req, res) => {
+  try {
+    const results = {};
+
+    // Check pools
+    const pools = await query('SELECT COUNT(*) as count FROM pools');
+    results.pools = parseInt(pools.rows[0].count);
+
+    // Check teams
+    const teams = await query('SELECT COUNT(*) as count FROM teams');
+    results.teams = parseInt(teams.rows[0].count);
+
+    // Check matches
+    const matches = await query('SELECT COUNT(*) as count FROM matches');
+    results.matches = parseInt(matches.rows[0].count);
+
+    // Check entries
+    const entries = await query('SELECT COUNT(*) as count FROM entries');
+    results.entries = parseInt(entries.rows[0].count);
+
+    // Check picks
+    const picks = await query('SELECT COUNT(*) as count FROM picks');
+    results.picks = parseInt(picks.rows[0].count);
+
+    // Get sample pool data
+    const poolData = await query('SELECT id, gameweek, status, entry_deadline FROM pools ORDER BY gameweek ASC LIMIT 5');
+    results.samplePools = poolData.rows;
+
+    // Get sample team data
+    const teamData = await query('SELECT id, name, short_name FROM teams LIMIT 5');
+    results.sampleTeams = teamData.rows;
+
+    res.json({
+      success: true,
+      counts: {
+        pools: results.pools,
+        teams: results.teams,
+        matches: results.matches,
+        entries: results.entries,
+        picks: results.picks
+      },
+      samples: {
+        pools: results.samplePools,
+        teams: results.sampleTeams
+      }
+    });
+  } catch (error) {
+    console.error('Error checking database state:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
