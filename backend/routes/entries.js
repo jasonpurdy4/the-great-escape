@@ -56,6 +56,7 @@ router.get('/my', authenticate, async (req, res) => {
             gameweek,
             team_id,
             team_name,
+            team_crest,
             match_id,
             result,
             picked_at

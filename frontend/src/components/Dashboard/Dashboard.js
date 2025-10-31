@@ -62,7 +62,8 @@ function Dashboard() {
             matchday: entry.latest_pick.gameweek,
             team: {
               id: entry.latest_pick.team_id,
-              name: entry.latest_pick.team_name
+              name: entry.latest_pick.team_name,
+              crest: entry.latest_pick.team_crest
             },
             result: entry.latest_pick.result || 'pending',
             pickedAt: entry.latest_pick.picked_at
