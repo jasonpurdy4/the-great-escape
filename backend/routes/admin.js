@@ -158,15 +158,15 @@ router.post('/populate-teams', async (req, res) => {
 
     for (const team of teams) {
       const result = await query(
-        `INSERT INTO teams (id, name, short_name, tla, crest)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO teams (id, name, short_name, tla, crest_url, season)
+         VALUES ($1, $2, $3, $4, $5, $6)
          ON CONFLICT (id) DO UPDATE SET
            name = EXCLUDED.name,
            short_name = EXCLUDED.short_name,
            tla = EXCLUDED.tla,
-           crest = EXCLUDED.crest
+           crest_url = EXCLUDED.crest_url
          RETURNING (xmax = 0) AS inserted`,
-        [team.id, team.name, team.shortName, team.tla, team.crest]
+        [team.id, team.name, team.shortName, team.tla, team.crest, '2024-25']
       );
 
       if (result.rows[0].inserted) {
