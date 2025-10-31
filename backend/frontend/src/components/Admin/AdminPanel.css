@@ -1,0 +1,191 @@
+/* Admin Panel Styles */
+
+.admin-panel {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  background: var(--light-grey);
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 40px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--premier-league-purple) 100%);
+  color: white;
+  border-radius: 16px;
+}
+
+.admin-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 36px;
+}
+
+.admin-header p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 18px;
+}
+
+.batch-actions {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.gameweek-section {
+  margin-bottom: 60px;
+}
+
+.gameweek-section h2 {
+  font-size: 28px;
+  color: var(--navy);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--union-jack-red);
+}
+
+.picks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.pick-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pick-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.pick-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--light-grey);
+}
+
+.pick-header .team-crest {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.pick-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: var(--navy);
+}
+
+.pick-meta {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--medium-grey);
+}
+
+.result-selector {
+  margin-bottom: 20px;
+}
+
+.result-selector label {
+  display: block;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.radio-option {
+  flex: 1;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  display: none;
+}
+
+.result-label {
+  display: block;
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.radio-option input[type="radio"]:checked + .result-label {
+  border-color: var(--navy);
+  transform: scale(1.05);
+}
+
+.result-label.win {
+  background: #e7f5e9;
+  color: #2d6a4f;
+}
+
+.radio-option input[type="radio"]:checked + .result-label.win {
+  background: #2d6a4f;
+  color: white;
+}
+
+.result-label.draw {
+  background: #fff9e6;
+  color: #856404;
+}
+
+.radio-option input[type="radio"]:checked + .result-label.draw {
+  background: #856404;
+  color: white;
+}
+
+.result-label.loss {
+  background: #fee;
+  color: #C8102E;
+}
+
+.radio-option input[type="radio"]:checked + .result-label.loss {
+  background: #C8102E;
+  color: white;
+}
+
+.no-pending {
+  text-align: center;
+  padding: 80px 40px;
+  background: white;
+  border-radius: 16px;
+}
+
+.no-pending h2 {
+  font-size: 32px;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.no-pending p {
+  font-size: 18px;
+  color: var(--medium-grey);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .picks-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .radio-group {
+    flex-direction: column;
+  }
+}

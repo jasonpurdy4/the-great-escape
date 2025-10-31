@@ -10,6 +10,7 @@ import PayPalCallback from './components/Auth/PayPalCallback';
 import MagicLinkVerify from './components/Auth/MagicLinkVerify';
 import PrivacyPolicy from './components/Legal/PrivacyPolicy';
 import TermsOfService from './components/Legal/TermsOfService';
+import AdminPanel from './components/Admin/AdminPanel';
 import './App.css';
 
 const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID || 'AaFxRm6jWaCu0azzB9dHFAM1hFFwFEwxl-j_FuECE7s5kKh0UrGiFuTJuLHIOY-xWADbWh0I3HbhZB-5';
@@ -47,6 +48,7 @@ function AppContent() {
         <Route path="/team-selection" element={<TeamSelection />} />
         <Route path="/auth/paypal/callback" element={<PayPalCallback />} />
         <Route path="/auth/magic-link/:token" element={<MagicLinkVerify />} />
+        <Route path="/admin" element={<AdminPanel />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route
