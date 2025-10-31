@@ -167,36 +167,6 @@ function Referral({ userId }) {
           </div>
         </div>
       </div>
-
-      {/* How It Works */}
-      <div className="referral-how-it-works">
-        <h3>How It Works</h3>
-        <div className="steps">
-          <div className="step">
-            <div className="step-number">1</div>
-            <div className="step-content">
-              <h4>Share Your Link</h4>
-              <p>Send your unique referral link to friends</p>
-            </div>
-          </div>
-
-          <div className="step">
-            <div className="step-number">2</div>
-            <div className="step-content">
-              <h4>Friend Signs Up</h4>
-              <p>They create an account and make their first entry</p>
-            </div>
-          </div>
-
-          <div className="step">
-            <div className="step-number">3</div>
-            <div className="step-content">
-              <h4>You Both Get $10</h4>
-              <p>$10 credit added to both accounts instantly!</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
