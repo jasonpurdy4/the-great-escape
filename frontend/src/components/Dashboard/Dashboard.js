@@ -56,7 +56,17 @@ function Dashboard({ onNavigate }) {
           totalPicks: entry.total_picks,
           winningPicks: entry.winning_picks,
           losingPicks: entry.losing_picks,
-          poolStatus: entry.pool_status
+          poolStatus: entry.pool_status,
+          // Include the latest pick if available
+          currentPick: entry.latest_pick ? {
+            matchday: entry.latest_pick.gameweek,
+            team: {
+              id: entry.latest_pick.team_id,
+              name: entry.latest_pick.team_name
+            },
+            result: entry.latest_pick.result || 'pending',
+            pickedAt: entry.latest_pick.picked_at
+          } : null
         }));
         setEntries(transformedEntries);
       }

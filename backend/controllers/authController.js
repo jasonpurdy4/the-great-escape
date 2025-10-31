@@ -261,7 +261,7 @@ async function getProfile(req, res) {
     const result = await query(
       `SELECT id, email, first_name, last_name, date_of_birth,
               address_line1, address_line2, city, state, zip_code, country,
-              paypal_email, balance_cents, credit_cents, created_at
+              paypal_email, balance_cents, credit_cents, referral_code, created_at
        FROM users WHERE id = $1`,
       [req.user.id]
     );
@@ -295,6 +295,7 @@ async function getProfile(req, res) {
         balance: user.balance_cents / 100, // Withdrawable balance (winnings + deposits)
         credits: user.credit_cents / 100, // Non-withdrawable credits (referral bonuses)
         totalFunds: (user.balance_cents + user.credit_cents) / 100, // Total available for entries
+        referralCode: user.referral_code,
         createdAt: user.created_at
       }
     });

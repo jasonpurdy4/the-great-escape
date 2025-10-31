@@ -46,9 +46,37 @@ router.get('/my', authenticate, async (req, res) => {
       [req.userId]
     );
 
+    // For each entry, fetch the latest pick with details
+    const entriesWithPicks = await Promise.all(
+      result.rows.map(async (entry) => {
+        // Get the latest pick for this entry
+        const pickResult = await query(
+          `SELECT
+            id,
+            gameweek,
+            team_id,
+            team_name,
+            match_id,
+            result,
+            picked_at
+           FROM picks
+           WHERE entry_id = $1
+           ORDER BY gameweek DESC
+           LIMIT 1`,
+          [entry.id]
+        );
+
+        // Add the latest pick to the entry data
+        return {
+          ...entry,
+          latest_pick: pickResult.rows.length > 0 ? pickResult.rows[0] : null
+        };
+      })
+    );
+
     res.json({
       success: true,
-      data: result.rows
+      data: entriesWithPicks
     });
   } catch (error) {
     console.error('Get my entries error:', error);
