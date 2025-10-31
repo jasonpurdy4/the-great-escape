@@ -370,18 +370,18 @@
   flex-shrink: 0;
 }
 
-.step-content {
+.how-it-works .step-content {
   text-align: center;
 }
 
-.step-content h4 {
+.how-it-works .step-content h4 {
   color: var(--navy);
   margin-bottom: 12px;
   font-size: 22px;
   font-weight: 700;
 }
 
-.step-content p {
+.how-it-works .step-content p {
   font-size: 16px;
   color: var(--medium-grey);
   line-height: 1.6;
