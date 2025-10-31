@@ -17,23 +17,50 @@
 
 .referral-modal {
   background: var(--white);
-  border-radius: 24px;
-  max-width: 550px;
+  border-radius: 20px;
+  max-width: 420px;
   width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: slideUp 0.3s ease;
 }
 
 .referral-content {
-  padding: var(--space-xl);
+  padding: 32px 28px;
   text-align: center;
 }
 
 .referral-icon {
-  font-size: 64px;
-  margin-bottom: var(--space-md);
+  font-size: 48px;
+  margin-bottom: 12px;
   animation: bounce 1s ease infinite;
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--medium-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
 }
 
 @keyframes bounce {
@@ -47,15 +74,15 @@
 
 .referral-content h2 {
   color: var(--navy);
-  margin-bottom: var(--space-sm);
-  font-size: 32px;
+  margin-bottom: 8px;
+  font-size: 26px;
   font-weight: 800;
 }
 
 .referral-subtitle {
   color: var(--medium-grey);
-  font-size: 18px;
-  margin-bottom: var(--space-xl);
+  font-size: 15px;
+  margin-bottom: 24px;
   font-weight: 500;
 }
 
@@ -64,11 +91,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
-  padding: var(--space-lg);
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 20px;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   border: 2px solid var(--union-jack-red);
 }
 
@@ -80,7 +107,7 @@
 }
 
 .incentive-icon {
-  font-size: 32px;
+  font-size: 28px;
 }
 
 .incentive-text {
@@ -92,7 +119,7 @@
 
 .incentive-text strong {
   color: var(--navy);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   display: block;
   margin-bottom: 2px;
@@ -100,82 +127,82 @@
 
 .incentive-text span {
   color: var(--medium-grey);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .incentive-divider {
   color: var(--union-jack-red);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  padding: 0 var(--space-sm);
+  padding: 0 8px;
 }
 
 /* Referral Code Section */
 .referral-code-section {
-  margin-bottom: var(--space-lg);
+  margin-bottom: 20px;
 }
 
 .referral-code-section label {
   display: block;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--navy);
-  margin-bottom: var(--space-xs);
+  margin-bottom: 8px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .referral-code-display {
   background: var(--navy);
   color: var(--white);
-  padding: var(--space-md);
-  border-radius: var(--radius-md);
-  font-size: 28px;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 22px;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   font-family: 'Courier New', monospace;
 }
 
 /* Referral Link Section */
 .referral-link-section {
-  margin-bottom: var(--space-lg);
+  margin-bottom: 20px;
 }
 
 .referral-link-section label {
   display: block;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--navy);
-  margin-bottom: var(--space-xs);
+  margin-bottom: 8px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .referral-link-box {
   display: flex;
-  gap: var(--space-sm);
+  gap: 8px;
   align-items: center;
 }
 
 .referral-link-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border: 2px solid var(--light-grey);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   color: var(--navy);
   background: var(--light-grey);
   font-family: 'Courier New', monospace;
 }
 
 .copy-btn {
-  padding: 12px 24px;
+  padding: 10px 20px;
   background: var(--union-jack-red);
   color: var(--white);
   border: none;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -195,14 +222,16 @@
 
 .referral-note {
   color: var(--medium-grey);
-  font-size: 14px;
-  margin-bottom: var(--space-lg);
+  font-size: 13px;
+  margin-bottom: 20px;
   line-height: 1.5;
 }
 
 .referral-content .btn-large {
   width: 100%;
-  margin-top: var(--space-md);
+  margin-top: 16px;
+  padding: 14px;
+  font-size: 15px;
 }
 
 /* Responsive */
