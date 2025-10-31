@@ -1,50 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LandingPage from './components/LandingPage';
 import TeamSelection from './components/TeamSelection';
 import Dashboard from './components/Dashboard/Dashboard';
+import PoolDetails from './components/PoolDetails/PoolDetails';
 import './App.css';
 
-function AppContent() {
+// Protected route wrapper
+function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState('landing'); // 'landing', 'team-selection', or 'dashboard'
 
-  // Auto-navigate to dashboard if authenticated
-  useEffect(() => {
-    if (isAuthenticated && currentPage === 'landing') {
-      setCurrentPage('dashboard');
-    }
-  }, [isAuthenticated, currentPage]);
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
 
-  const renderPage = () => {
-    if (loading) {
-      return (
-        <div className="loading-screen">
-          <div className="loading">Loading...</div>
-        </div>
-      );
-    }
+  return isAuthenticated ? children : <Navigate to="/" />;
+}
 
-    // If authenticated, show dashboard unless specifically on team-selection
-    if (isAuthenticated && currentPage !== 'team-selection') {
-      return <Dashboard onNavigate={setCurrentPage} />;
-    }
+function AppContent() {
+  const { loading } = useAuth();
 
-    switch(currentPage) {
-      case 'landing':
-        return <LandingPage onNavigate={setCurrentPage} />;
-      case 'team-selection':
-        return <TeamSelection onNavigate={setCurrentPage} />;
-      case 'dashboard':
-        return <Dashboard onNavigate={setCurrentPage} />;
-      default:
-        return <LandingPage onNavigate={setCurrentPage} />;
-    }
-  };
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
-      {renderPage()}
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/team-selection" element={<TeamSelection />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pool/:entryId"
+          element={
+            <ProtectedRoute>
+              <PoolDetails />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </div>
   );
 }
@@ -52,7 +62,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <Router>
+        <AppContent />
+      </Router>
     </AuthProvider>
   );
 }

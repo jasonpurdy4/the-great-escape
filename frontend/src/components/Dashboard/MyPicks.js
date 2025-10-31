@@ -1,8 +1,10 @@
 // MyPicks - Shows user's active entries and their picks
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MyPicks.css';
 
 function MyPicks({ entries, onRefresh }) {
+  const navigate = useNavigate();
   if (!entries || entries.length === 0) {
     return (
       <div className="empty-state">
@@ -29,7 +31,12 @@ function MyPicks({ entries, onRefresh }) {
         const statusBadge = getStatusBadge(entry.status);
 
         return (
-          <div key={entry.id} className={`pick-card ${statusBadge.className}`}>
+          <div
+            key={entry.id}
+            className={`pick-card ${statusBadge.className}`}
+            onClick={() => navigate(`/pool/${entry.id}`)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="pick-header">
               <div className="pick-pool-info">
                 <span className="matchday-badge">Matchday {entry.poolId}</span>

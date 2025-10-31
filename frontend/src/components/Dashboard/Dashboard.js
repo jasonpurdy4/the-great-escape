@@ -8,7 +8,7 @@ import Referral from './Referral';
 import ReferralModal from '../ReferralModal';
 import './Dashboard.css';
 
-function Dashboard({ onNavigate }) {
+function Dashboard() {
   const { user, balance, credits, totalFunds, logout, token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState([]);
