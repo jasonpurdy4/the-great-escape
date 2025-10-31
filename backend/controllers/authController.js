@@ -245,15 +245,15 @@ async function login(req, res) {
 
     res.json({
       success: true,
-      data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.first_name,
-          lastName: user.last_name
-        },
-        token
-      }
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        balance: 0,
+        credits: 0
+      },
+      token
     });
   } catch (error) {
     console.error('Login error:', error);
