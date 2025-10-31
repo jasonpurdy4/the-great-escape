@@ -291,6 +291,16 @@
   z-index: 1;
 }
 
+.team-selection-section .section-subtitle {
+  text-align: center;
+  color: var(--medium-grey);
+  font-size: 18px;
+  font-weight: 500;
+  margin: -20px 0 32px 0;
+  position: relative;
+  z-index: 1;
+}
+
 /* Team Crests Scrolling Section */
 .teams-showcase {
   background: var(--white);
