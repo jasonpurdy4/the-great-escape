@@ -171,6 +171,13 @@ async function login(req, res) {
   try {
     const { email, password } = req.body;
 
+    // DEBUG: Log the exact email being received
+    console.log('🔐 Login attempt:');
+    console.log(`   Email received: "${email}"`);
+    console.log(`   Email length: ${email?.length}`);
+    console.log(`   Email after toLowerCase: "${email?.toLowerCase()}"`);
+    console.log(`   Password provided: ${password ? 'YES' : 'NO'}`);
+
     // Validate input
     if (!email || !password) {
       return res.status(400).json({
@@ -183,10 +190,12 @@ async function login(req, res) {
     const result = await query(
       `SELECT id, email, password_hash, first_name, last_name, account_status
        FROM users WHERE email = $1`,
-      [email.toLowerCase()]
+      [email.toLowerCase().trim()]
     );
 
+    console.log(`   Database lookup result: ${result.rows.length} rows found`);
     if (result.rows.length === 0) {
+      console.log('   ❌ No user found with that email');
       return res.status(401).json({
         success: false,
         error: 'Invalid email or password'
