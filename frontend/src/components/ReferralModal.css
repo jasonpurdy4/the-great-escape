@@ -80,10 +80,10 @@
 }
 
 .referral-subtitle {
-  color: var(--medium-grey);
+  color: #374151;
   font-size: 15px;
   margin-bottom: 24px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Incentive Display */
