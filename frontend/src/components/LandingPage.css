@@ -362,18 +362,14 @@
   box-shadow: 0 8px 16px rgba(200, 16, 46, 0.3);
 }
 
-.how-it-works .step-content {
-  text-align: center;
-}
-
-.how-it-works .step-content h4 {
+.step h4 {
   color: var(--navy);
   margin-bottom: 12px;
   font-size: 22px;
   font-weight: 700;
 }
 
-.how-it-works .step-content p {
+.step p {
   font-size: 16px;
   color: var(--medium-grey);
   line-height: 1.6;

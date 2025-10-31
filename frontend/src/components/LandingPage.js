@@ -360,24 +360,18 @@ function LandingPage({ onNavigate }) {
           <div className="steps">
             <div className="step">
               <div className="step-number">1</div>
-              <div className="step-content">
-                <h4>Pick a Team Each Week</h4>
-                <p>Choose one winning team per matchday. Can't reuse teams. Draw or loss = you're out.</p>
-              </div>
+              <h4>Pick a Team Each Week</h4>
+              <p>Choose one winning team per matchday. Can't reuse teams. Draw or loss = you're out.</p>
             </div>
             <div className="step">
               <div className="step-number">2</div>
-              <div className="step-content">
-                <h4>Survive or Die</h4>
-                <p>Win = Continue to next week. Draw or Loss = Eliminated. Simple as that.</p>
-              </div>
+              <h4>Survive or Die</h4>
+              <p>Win = Continue to next week. Draw or Loss = Eliminated. Simple as that.</p>
             </div>
             <div className="step">
               <div className="step-number">3</div>
-              <div className="step-content">
-                <h4>Win the Pot</h4>
-                <p>Last survivor(s) standing split the entire pot. Winner takes all.</p>
-              </div>
+              <h4>Win the Pot</h4>
+              <p>Last survivor(s) standing split the entire pot. Winner takes all.</p>
             </div>
           </div>
         </div>
