@@ -29,37 +29,63 @@ exports.getCurrentMatchweek = async (req, res) => {
 // Get next available gameweek with matches
 exports.getNextGameweek = async (req, res) => {
   try {
-    // First, try to find the next pool that's either:
-    // 1. Active with entry deadline in the future (can still join)
-    // 2. Or the next upcoming pool
+    // Step 1: Query the Football API to get the ACTUAL current matchday in the real world
+    const currentMatchdayResponse = await fetch(
+      `${FOOTBALL_API_BASE}/competitions/PL/matches`,
+      {
+        headers: {
+          'X-Auth-Token': FOOTBALL_API_TOKEN
+        }
+      }
+    );
+
+    if (!currentMatchdayResponse.ok) {
+      console.error('Football API error fetching current matchday:', await currentMatchdayResponse.text());
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to fetch current matchday from Football API'
+      });
+    }
+
+    const currentMatchdayData = await currentMatchdayResponse.json();
+
+    // Get the current matchday from the season object
+    const realCurrentMatchday = currentMatchdayData.matches?.[0]?.season?.currentMatchday || 11;
+
+    // Step 2: Determine which gameweek to show
+    // Strategy: Show the earliest gameweek that has matches that haven't finished yet
+    let gameweek = realCurrentMatchday;
+
+    // Fetch matches for the current matchday to see if they're all finished
+    const testMatchesResponse = await fetch(
+      `${FOOTBALL_API_BASE}/competitions/PL/matches?matchday=${realCurrentMatchday}`,
+      {
+        headers: {
+          'X-Auth-Token': FOOTBALL_API_TOKEN
+        }
+      }
+    );
+
+    if (testMatchesResponse.ok) {
+      const testMatchesData = await testMatchesResponse.json();
+      const allFinished = testMatchesData.matches?.every(m => m.status === 'FINISHED');
+
+      // If all matches in current matchday are finished, show next matchday
+      if (allFinished && realCurrentMatchday < 38) {
+        gameweek = realCurrentMatchday + 1;
+      }
+    }
+
+    // Step 3: Check if we have a pool for this gameweek in our database
     const poolResult = await query(
       `SELECT id as pool_id, gameweek, entry_deadline, pick_deadline, first_match_kickoff, status
        FROM pools
-       WHERE (status = 'active' AND entry_deadline > NOW())
-          OR (status = 'upcoming')
-       ORDER BY gameweek ASC
-       LIMIT 1`
+       WHERE gameweek = $1
+       LIMIT 1`,
+      [gameweek]
     );
 
-    let gameweek;
-    let poolData = null;
-
-    if (poolResult.rows.length > 0) {
-      poolData = poolResult.rows[0];
-      gameweek = poolData.gameweek;
-    } else {
-      // No upcoming pools found - get the highest gameweek from completed pools and add 1
-      const lastPoolResult = await query(
-        `SELECT MAX(gameweek) as last_gameweek FROM pools`
-      );
-
-      if (lastPoolResult.rows.length > 0 && lastPoolResult.rows[0].last_gameweek) {
-        gameweek = lastPoolResult.rows[0].last_gameweek + 1;
-      } else {
-        // No pools at all - default to gameweek 1
-        gameweek = 1;
-      }
-    }
+    let poolData = poolResult.rows.length > 0 ? poolResult.rows[0] : null;
 
     // Fetch matches for this gameweek from football-data.org
     const matchesResponse = await fetch(
