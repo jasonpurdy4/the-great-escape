@@ -137,6 +137,7 @@ exports.getNextGameweek = async (req, res) => {
     res.json({
       success: true,
       data: {
+        pool_id: poolData?.pool_id || null,
         gameweek: gameweek,
         deadline: poolData?.entry_deadline || null,
         pickDeadline: poolData?.pick_deadline || null,
@@ -159,6 +160,14 @@ exports.getNextGameweek = async (req, res) => {
 exports.getPoolStats = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Validate ID is provided and not undefined/null
+    if (!id || id === 'undefined' || id === 'null') {
+      return res.status(400).json({
+        error: 'Invalid pool ID provided',
+        id: id
+      });
+    }
 
     const result = await query(
       `SELECT
