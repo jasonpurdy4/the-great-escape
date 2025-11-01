@@ -55,10 +55,21 @@ function LandingPage() {
   // Fetch current matchweek
   const fetchCurrentMatchweek = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/matchweeks/current`);
+      const response = await fetch(`${API_URL}/api/gameweeks/next`);
       const data = await response.json();
-      setCurrentMatchweek(data);
-      return data;
+
+      if (data.success && data.data) {
+        const matchweekData = {
+          pool_id: data.data.pool_id || null,
+          matchweek: data.data.gameweek,
+          deadline: data.data.deadline,
+          status: data.data.status
+        };
+        setCurrentMatchweek(matchweekData);
+        setMatches(data.data.matches || []);
+        return matchweekData;
+      }
+      return null;
     } catch (error) {
       console.error('Error fetching current matchweek:', error);
       return null;
@@ -105,16 +116,16 @@ function LandingPage() {
       setLoading(true);
       const matchweek = await fetchCurrentMatchweek();
       if (matchweek) {
+        // Note: fetchCurrentMatchweek already sets matches, so we don't call fetchMatches
         await Promise.all([
-          fetchPoolStats(matchweek.pool_id),
-          fetchMatches(matchweek.matchweek),
+          matchweek.pool_id ? fetchPoolStats(matchweek.pool_id) : Promise.resolve(),
           fetchTeams()
         ]);
       }
       setLoading(false);
     };
     initializeData();
-  }, [fetchCurrentMatchweek, fetchPoolStats, fetchMatches, fetchTeams]);
+  }, [fetchCurrentMatchweek, fetchPoolStats, fetchTeams]);
 
   // Debug: Log when showPickConfirmation changes
   useEffect(() => {
