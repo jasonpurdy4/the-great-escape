@@ -54,10 +54,10 @@ function AdminPanel() {
 
       const data = await response.json();
       if (data.success) {
-        alert(\`✅ Pick updated to \${selectedResults[pickId]}\`);
+        alert(`✅ Pick updated to ${selectedResults[pickId]}`);
         fetchPendingPicks();
       } else {
-        alert(\`❌ Failed: \${data.error}\`);
+        alert(`❌ Failed: ${data.error}`);
       }
     } catch (error) {
       console.error('Error updating pick:', error);
@@ -68,7 +68,7 @@ function AdminPanel() {
   };
 
   const handleBatchUpdate = async () => {
-    if (!window.confirm(\`Update \${pendingPicks.length} picks?\`)) return;
+    if (!window.confirm(`Update ${pendingPicks.length} picks?`)) return;
 
     try {
       setUpdating(true);
@@ -86,10 +86,10 @@ function AdminPanel() {
 
       const data = await response.json();
       if (data.success) {
-        alert(\`✅ \${data.successCount} picks updated! (\${data.errorCount} errors)\`);
+        alert(`✅ ${data.successCount} picks updated! (${data.errorCount} errors)`);
         fetchPendingPicks();
       } else {
-        alert(\`❌ Failed: \${data.error}\`);
+        alert(`❌ Failed: ${data.error}`);
       }
     } catch (error) {
       console.error('Error batch updating:', error);
@@ -129,7 +129,7 @@ function AdminPanel() {
               onClick={handleBatchUpdate}
               disabled={updating}
             >
-              {updating ? 'Updating...' : \`Update All \${pendingPicks.length} Picks\`}
+              {updating ? 'Updating...' : `Update All ${pendingPicks.length} Picks`}
             </button>
           </div>
 
@@ -157,12 +157,12 @@ function AdminPanel() {
                           <label key={result} className="radio-option">
                             <input
                               type="radio"
-                              name={\`result-\${pick.pick_id}\`}
+                              name={`result-${pick.pick_id}`}
                               value={result}
                               checked={selectedResults[pick.pick_id] === result}
                               onChange={() => handleResultChange(pick.pick_id, result)}
                             />
-                            <span className={\`result-label \${result}\`}>
+                            <span className={`result-label ${result}`}>
                               {result === 'win' ? '✅ Win' : result === 'draw' ? '🟰 Draw' : '❌ Loss'}
                             </span>
                           </label>
