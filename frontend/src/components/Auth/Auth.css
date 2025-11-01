@@ -178,6 +178,22 @@
   justify-content: center;
 }
 
+/* Button overrides for Auth forms */
+.login-form .btn-primary,
+.register-form .btn-primary {
+  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%);
+  color: white !important;
+  border: none;
+}
+
+.login-form .btn-primary:disabled,
+.register-form .btn-primary:disabled {
+  background: #ccc;
+  color: white !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 /* Login Note */
 .login-note {
   text-align: center;
