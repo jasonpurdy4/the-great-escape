@@ -48,30 +48,30 @@
   transition: all 0.2s ease;
 }
 
-.btn-primary {
+.admin-panel .btn-primary {
   background: var(--red);
   color: white;
 }
 
-.btn-primary:hover {
+.admin-panel .btn-primary:hover {
   background: #a00d25;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
 }
 
-.btn-primary:disabled {
+.admin-panel .btn-primary:disabled {
   background: #ccc;
   cursor: not-allowed;
   transform: none;
 }
 
-.btn-secondary {
+.admin-panel .btn-secondary {
   background: white;
   color: var(--navy);
   border: 2px solid var(--navy);
 }
 
-.btn-secondary:hover {
+.admin-panel .btn-secondary:hover {
   background: var(--navy);
   color: white;
 }

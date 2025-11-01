@@ -159,6 +159,11 @@ function AddFundsModal({ onClose, onSuccess }) {
               onClick={handleContinue}
               className="btn btn-primary btn-large"
               disabled={!amount || parseFloat(amount) < 5}
+              style={{
+                background: 'linear-gradient(135deg, #C8102E 0%, #a00d25 100%)',
+                color: 'white',
+                border: 'none'
+              }}
             >
               Continue to Payment
             </button>
