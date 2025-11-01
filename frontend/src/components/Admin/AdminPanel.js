@@ -17,7 +17,7 @@ function AdminPanel() {
   const fetchPendingPicks = async () => {
     try {
       setLoading(true);
-      const response = await fetch(\`\${API_URL}/api/admin/pending-picks\`);
+      const response = await fetch(`${API_URL}/api/admin/pending-picks`);
       const data = await response.json();
 
       if (data.success) {
@@ -42,7 +42,7 @@ function AdminPanel() {
   const handleUpdateSingle = async (pickId, gameweek) => {
     try {
       setUpdating(true);
-      const response = await fetch(\`\${API_URL}/api/admin/update-pick-result\`, {
+      const response = await fetch(`${API_URL}/api/admin/update-pick-result`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -78,7 +78,7 @@ function AdminPanel() {
         gameweek: pick.gameweek
       }));
 
-      const response = await fetch(\`\${API_URL}/api/admin/batch-update-results\`, {
+      const response = await fetch(`${API_URL}/api/admin/batch-update-results`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ updates })
