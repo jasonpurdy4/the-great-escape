@@ -68,10 +68,14 @@ exports.getNextGameweek = async (req, res) => {
 
     if (testMatchesResponse.ok) {
       const testMatchesData = await testMatchesResponse.json();
-      const allFinished = testMatchesData.matches?.every(m => m.status === 'FINISHED');
 
-      // If all matches in current matchday are finished, show next matchday
-      if (allFinished && realCurrentMatchday < 38) {
+      // Check if any match has started (IN_PLAY, PAUSED, FINISHED)
+      const anyMatchStarted = testMatchesData.matches?.some(m =>
+        m.status === 'IN_PLAY' || m.status === 'PAUSED' || m.status === 'FINISHED'
+      );
+
+      // If any match has started, show next matchday (can't pick for games in progress)
+      if (anyMatchStarted && realCurrentMatchday < 38) {
         gameweek = realCurrentMatchday + 1;
       }
     }
