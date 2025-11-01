@@ -160,14 +160,18 @@
 }
 
 /* Button overrides for Add Funds Modal */
-.add-funds-modal .btn-primary {
-  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%);
+.add-funds-modal .btn.btn-primary {
+  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%) !important;
   color: white !important;
-  border: none;
+  border: none !important;
 }
 
-.add-funds-modal .btn-primary:disabled {
-  background: #ccc;
+.add-funds-modal .btn.btn-primary:hover {
+  background: linear-gradient(135deg, #a00d25 0%, #C8102E 100%) !important;
+}
+
+.add-funds-modal .btn.btn-primary:disabled {
+  background: #ccc !important;
   color: white !important;
   cursor: not-allowed;
   opacity: 0.6;
