@@ -318,7 +318,7 @@ function LandingPage() {
         <section className="team-selection-section section">
           <div className="container">
             <h2 className="section-title">Pick your Team for Matchday {currentMatchweek?.matchweek}</h2>
-            <p className="section-subtitle">$10 per entry • Buy multiple entries to increase your chances!</p>
+            <p className="section-subtitle">$10 per entry</p>
             <div className="matches-grid">
               {matches.map((match) => {
                 const times = formatDate(match.utcDate);
