@@ -115,7 +115,6 @@ function Dashboard() {
           <div className="header-content">
             <div className="header-left">
               <h1>The Great Escape</h1>
-              <p className="welcome-text">Welcome back, {user?.firstName || 'Player'}!</p>
             </div>
             <div className="header-right">
               <button onClick={logout} className="btn btn-secondary">

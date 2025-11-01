@@ -20,9 +20,9 @@
 }
 
 .dashboard-header h1 {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: 28px;
-  color: var(--navy);
+  color: #C8102E;
   font-weight: 800;
 }
 
