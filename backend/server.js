@@ -18,7 +18,6 @@ const poolRoutes = require('./routes/pools');
 const entryRoutes = require('./routes/entries');
 const pickRoutes = require('./routes/picks');
 const adminRoutes = require('./routes/admin'); // TEMPORARY - for debugging
-const migrateRoutes = require('./routes/migrate'); // TEMPORARY - for running migrations
 
 // Football Data API configuration
 const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
@@ -34,7 +33,6 @@ app.use('/api/gameweeks', poolRoutes); // Alias for gameweeks (same as pools)
 app.use('/api/entries', entryRoutes);
 app.use('/api/picks', pickRoutes);
 app.use('/api/admin', adminRoutes); // TEMPORARY - for debugging
-app.use('/api/migrate', migrateRoutes); // TEMPORARY - for running migrations
 
 // Test route
 app.get('/api/health', (req, res) => {
