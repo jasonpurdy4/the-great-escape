@@ -2,7 +2,7 @@ const { query } = require('../db/connection');
 // Note: Node 18+ has built-in fetch, no import needed
 
 const FOOTBALL_API_BASE = 'https://api.football-data.org/v4';
-const FOOTBALL_API_KEY = process.env.FOOTBALL_API_KEY || 'e28392e0e4cf43f3af47cc3a7e2e9a2e';
+const FOOTBALL_API_TOKEN = process.env.FOOTBALL_API_TOKEN || '5a09c0f3cece4cab8d1dda6c1b07582b';
 
 // Get current active matchweek/pool
 exports.getCurrentMatchweek = async (req, res) => {
@@ -66,7 +66,7 @@ exports.getNextGameweek = async (req, res) => {
       `${FOOTBALL_API_BASE}/competitions/PL/matches?matchday=${gameweek}`,
       {
         headers: {
-          'X-Auth-Token': FOOTBALL_API_KEY
+          'X-Auth-Token': FOOTBALL_API_TOKEN
         }
       }
     );
