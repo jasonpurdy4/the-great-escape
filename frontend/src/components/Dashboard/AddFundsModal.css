@@ -159,6 +159,20 @@
   justify-content: center;
 }
 
+/* Button overrides for Add Funds Modal */
+.add-funds-modal .btn-primary {
+  background: linear-gradient(135deg, #C8102E 0%, #a00d25 100%);
+  color: white !important;
+  border: none;
+}
+
+.add-funds-modal .btn-primary:disabled {
+  background: #ccc;
+  color: white !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .add-funds-modal {
