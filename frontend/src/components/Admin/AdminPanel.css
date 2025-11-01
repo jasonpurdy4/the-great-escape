@@ -1,0 +1,226 @@
+/* Admin Panel Styles */
+
+.admin-panel {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf0 100%);
+  padding: 40px 0;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.admin-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.admin-header p {
+  font-size: 16px;
+  color: var(--medium-grey);
+}
+
+.loading,
+.no-picks {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: var(--medium-grey);
+}
+
+.batch-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #a00d25;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--navy);
+  border: 2px solid var(--navy);
+}
+
+.btn-secondary:hover {
+  background: var(--navy);
+  color: white;
+}
+
+.gameweek-section {
+  margin-bottom: 40px;
+}
+
+.gameweek-header {
+  background: white;
+  padding: 20px;
+  border-radius: 12px 12px 0 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.gameweek-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+}
+
+.picks-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.pick-card {
+  background: white;
+  padding: 24px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pick-card:not(:last-child) {
+  border-radius: 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.pick-card:last-child {
+  border-radius: 0 0 12px 12px;
+}
+
+.pick-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.team-crest {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.pick-details {
+  flex: 1;
+}
+
+.user-info {
+  font-size: 14px;
+  color: var(--medium-grey);
+  margin-bottom: 4px;
+}
+
+.team-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.match-info {
+  font-size: 14px;
+  color: var(--medium-grey);
+  margin-top: 4px;
+}
+
+.result-selector {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.result-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.result-label {
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.result-label.win {
+  color: #10b981;
+}
+
+.result-label.draw {
+  color: #f59e0b;
+}
+
+.result-label.loss {
+  color: #ef4444;
+}
+
+.pick-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.pick-actions .btn {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-header h1 {
+    font-size: 24px;
+  }
+
+  .batch-actions {
+    flex-direction: column;
+  }
+
+  .pick-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .result-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pick-actions {
+    flex-direction: column;
+  }
+}
