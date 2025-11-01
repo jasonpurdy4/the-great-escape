@@ -1,10 +1,38 @@
 # The Great Escape - Current Status
-**Last Updated:** October 31, 2025 - 2:30 PM PST
-**Session Summary:** Major progress on authentication, admin tools, and dashboard improvements
+**Last Updated:** October 31, 2025 - 10:58 PM PST
+**Session Summary:** Fixed critical gameweek detection bug - site now shows next week's games dynamically
 
 ---
 
 ## 🎯 What We Accomplished Today
+
+### 0. ✅ Dynamic Gameweek Detection (JUST COMPLETED - 10:58 PM)
+- **The Problem:**
+  - Site was hardcoded to show Gameweek 10
+  - After matches started, users saw locked/in-progress games
+  - No way to advance to next week automatically
+  - Missing `/api/gameweeks/next` endpoint that frontend was calling
+
+- **The Solution:**
+  - Created `/api/gameweeks/next` endpoint in `backend/controllers/poolController.js`
+  - Endpoint intelligently determines next available gameweek based on:
+    - Active pools with entry deadlines in the future
+    - Or next upcoming pool
+    - Or highest completed gameweek + 1
+  - Fetches real matches from football-data.org API
+  - Updated `TeamSelection.js` to fetch gameweek dynamically instead of hardcoded value
+  - Added route aliases: `/api/gameweeks/*` → same as `/api/pools/*`
+
+- **Files Changed:**
+  - `backend/controllers/poolController.js` - Added `getNextGameweek()` function
+  - `backend/routes/pools.js` - Added `/next` route
+  - `backend/server.js` - Added `/api/gameweeks` alias
+  - `frontend/src/components/TeamSelection.js` - Removed hardcoded GW10, now fetches dynamically
+
+- **Status:** ✅ DEPLOYED - Railway auto-deploying now
+- **Impact:** Site will always show the correct upcoming gameweek, even after matches start
+
+---
 
 ### 1. ✅ Magic Link Passwordless Authentication (COMPLETE)
 - **Backend:**
