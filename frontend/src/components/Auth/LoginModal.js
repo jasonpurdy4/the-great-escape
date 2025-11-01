@@ -61,19 +61,12 @@ function LoginModal({ onClose, onLogin }) {
         <button className="close-btn" onClick={onClose}>×</button>
 
         <div className="login-form">
-          <h2>Welcome Back</h2>
-          <p className="form-subtitle">
-            {linkSent ? 'Check your email!' : 'Login to your account'}
-          </p>
-
-          {error && (
-            <div className="error-message general-error">{error}</div>
-          )}
-
           {linkSent ? (
             <div className="magic-link-sent">
+              <h2>Magic link sent! 🪄</h2>
+              <p className="form-subtitle">Check your email</p>
+
               <div className="success-message">
-                <h3>Magic link sent! 🪄</h3>
                 <p>We've sent a login link to <strong>{email}</strong></p>
                 <p>Click the link in your email to login instantly.</p>
                 <p className="expiry-note">The link expires in 15 minutes.</p>
@@ -98,28 +91,37 @@ function LoginModal({ onClose, onLogin }) {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  autoComplete="email"
-                />
-              </div>
+            <>
+              <h2>Welcome Back</h2>
+              <p className="form-subtitle">Login to your account</p>
 
-              <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
-                {loading ? 'Sending...' : 'Send Magic Link'}
-              </button>
-            </form>
+              {error && (
+                <div className="error-message general-error">{error}</div>
+              )}
+
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleChange}
+                    placeholder="your@email.com"
+                    autoComplete="email"
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Magic Link'}
+                </button>
+              </form>
+
+              <p className="login-note">
+                Don't have an account? Just make a pick to get started!
+              </p>
+            </>
           )}
-
-          <p className="login-note">
-            Don't have an account? Just make a pick to get started!
-          </p>
         </div>
       </div>
     </div>
