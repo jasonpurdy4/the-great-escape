@@ -26,10 +26,15 @@ function TeamSelection({ onNavigate }) {
       const gameweekResponse = await fetch(`${API_URL}/api/gameweeks/next`);
       const gameweekData = await gameweekResponse.json();
 
+      console.log('Gameweek API response:', gameweekData);
+
       if (gameweekData.success && gameweekData.data) {
+        console.log('Setting matchday to:', gameweekData.data.gameweek);
+        console.log('Setting matches:', gameweekData.data.matches);
         setCurrentMatchday(gameweekData.data.gameweek);
         setMatches(gameweekData.data.matches || []);
       } else {
+        console.log('Gameweek API failed, using fallback');
         // Fallback: fetch matches for current matchday from Football API
         const response = await fetch(`${API_URL}/api/current-matchday`);
         const data = await response.json();
