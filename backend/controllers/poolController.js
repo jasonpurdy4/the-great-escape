@@ -1,5 +1,5 @@
 const { query } = require('../db/connection');
-const fetch = require('node-fetch');
+// Note: Node 18+ has built-in fetch, no import needed
 
 const FOOTBALL_API_BASE = 'https://api.football-data.org/v4';
 const FOOTBALL_API_KEY = process.env.FOOTBALL_API_KEY || 'e28392e0e4cf43f3af47cc3a7e2e9a2e';
