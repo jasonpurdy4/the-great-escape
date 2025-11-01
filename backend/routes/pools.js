@@ -5,6 +5,9 @@ const poolController = require('../controllers/poolController');
 // Get current active matchweek
 router.get('/current', poolController.getCurrentMatchweek);
 
+// Get next available gameweek (used by frontend to show upcoming matches)
+router.get('/next', poolController.getNextGameweek);
+
 // Get all pools (with optional status filter)
 router.get('/', poolController.getAllPools);
 

@@ -7,7 +7,7 @@ import './TeamSelection.css';
 function TeamSelection({ onNavigate }) {
   const { isAuthenticated } = useAuth();
   const [matches, setMatches] = useState([]);
-  const [currentMatchday] = useState(10);
+  const [currentMatchday, setCurrentMatchday] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -21,15 +21,32 @@ function TeamSelection({ onNavigate }) {
     try {
       setLoading(true);
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${API_URL}/api/matches?matchday=${currentMatchday}`);
-      const data = await response.json();
-      setMatches(data.matches || []);
+
+      // Fetch next available gameweek
+      const gameweekResponse = await fetch(`${API_URL}/api/gameweeks/next`);
+      const gameweekData = await gameweekResponse.json();
+
+      if (gameweekData.success && gameweekData.data) {
+        setCurrentMatchday(gameweekData.data.gameweek);
+        setMatches(gameweekData.data.matches || []);
+      } else {
+        // Fallback: fetch matches for current matchday from Football API
+        const response = await fetch(`${API_URL}/api/current-matchday`);
+        const data = await response.json();
+        const matchday = data.currentMatchday || 10;
+        setCurrentMatchday(matchday);
+
+        const matchesResponse = await fetch(`${API_URL}/api/matches?matchday=${matchday}`);
+        const matchesData = await matchesResponse.json();
+        setMatches(matchesData.matches || []);
+      }
+
       setLoading(false);
     } catch (error) {
       console.error('Error fetching matches:', error);
       setLoading(false);
     }
-  }, [currentMatchday]);
+  }, []);
 
   useEffect(() => {
     fetchMatchdayData();

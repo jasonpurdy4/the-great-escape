@@ -1,4 +1,8 @@
 const { query } = require('../db/connection');
+const fetch = require('node-fetch');
+
+const FOOTBALL_API_BASE = 'https://api.football-data.org/v4';
+const FOOTBALL_API_KEY = process.env.FOOTBALL_API_KEY || 'e28392e0e4cf43f3af47cc3a7e2e9a2e';
 
 // Get current active matchweek/pool
 exports.getCurrentMatchweek = async (req, res) => {
@@ -19,6 +23,105 @@ exports.getCurrentMatchweek = async (req, res) => {
   } catch (error) {
     console.error('Error fetching current matchweek:', error);
     res.status(500).json({ error: 'Failed to fetch current matchweek' });
+  }
+};
+
+// Get next available gameweek with matches
+exports.getNextGameweek = async (req, res) => {
+  try {
+    // First, try to find the next pool that's either:
+    // 1. Active with entry deadline in the future (can still join)
+    // 2. Or the next upcoming pool
+    const poolResult = await query(
+      `SELECT id as pool_id, gameweek, entry_deadline, pick_deadline, first_match_kickoff, status
+       FROM pools
+       WHERE (status = 'active' AND entry_deadline > NOW())
+          OR (status = 'upcoming')
+       ORDER BY gameweek ASC
+       LIMIT 1`
+    );
+
+    let gameweek;
+    let poolData = null;
+
+    if (poolResult.rows.length > 0) {
+      poolData = poolResult.rows[0];
+      gameweek = poolData.gameweek;
+    } else {
+      // No upcoming pools found - get the highest gameweek from completed pools and add 1
+      const lastPoolResult = await query(
+        `SELECT MAX(gameweek) as last_gameweek FROM pools`
+      );
+
+      if (lastPoolResult.rows.length > 0 && lastPoolResult.rows[0].last_gameweek) {
+        gameweek = lastPoolResult.rows[0].last_gameweek + 1;
+      } else {
+        // No pools at all - default to gameweek 1
+        gameweek = 1;
+      }
+    }
+
+    // Fetch matches for this gameweek from football-data.org
+    const matchesResponse = await fetch(
+      `${FOOTBALL_API_BASE}/competitions/PL/matches?matchday=${gameweek}`,
+      {
+        headers: {
+          'X-Auth-Token': FOOTBALL_API_KEY
+        }
+      }
+    );
+
+    if (!matchesResponse.ok) {
+      console.error('Football API error:', await matchesResponse.text());
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to fetch matches from Football API'
+      });
+    }
+
+    const matchesData = await matchesResponse.json();
+
+    // Transform matches to our format
+    const matches = matchesData.matches.map(match => ({
+      id: match.id,
+      homeTeam: {
+        id: match.homeTeam.id,
+        name: match.homeTeam.name,
+        shortName: match.homeTeam.shortName,
+        tla: match.homeTeam.tla,
+        crest: match.homeTeam.crest
+      },
+      awayTeam: {
+        id: match.awayTeam.id,
+        name: match.awayTeam.name,
+        shortName: match.awayTeam.shortName,
+        tla: match.awayTeam.tla,
+        crest: match.awayTeam.crest
+      },
+      utcDate: match.utcDate,
+      status: match.status,
+      matchday: match.matchday
+    }));
+
+    // Return response
+    res.json({
+      success: true,
+      data: {
+        gameweek: gameweek,
+        deadline: poolData?.entry_deadline || null,
+        pickDeadline: poolData?.pick_deadline || null,
+        firstMatchKickoff: poolData?.first_match_kickoff || matches[0]?.utcDate || null,
+        status: poolData?.status || 'upcoming',
+        matches: matches
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching next gameweek:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch next gameweek'
+    });
   }
 };
 

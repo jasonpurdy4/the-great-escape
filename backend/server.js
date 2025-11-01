@@ -29,6 +29,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/pools', poolRoutes);
 app.use('/api/matchweeks', poolRoutes); // Alias for semantic clarity
+app.use('/api/gameweeks', poolRoutes); // Alias for gameweeks (same as pools)
 app.use('/api/entries', entryRoutes);
 app.use('/api/picks', pickRoutes);
 app.use('/api/admin', adminRoutes); // TEMPORARY - for debugging
