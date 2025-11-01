@@ -22,7 +22,7 @@
 .dashboard-header h1 {
   margin: 0;
   font-size: 28px;
-  color: #C8102E;
+  color: #C8102E !important;
   font-weight: 800;
 }
 
